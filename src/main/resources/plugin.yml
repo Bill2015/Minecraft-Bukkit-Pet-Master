@@ -1,0 +1,8 @@
+name: ${project.name}
+description: ${project.description}
+version: ${project.version}
+main: com.bill.petmaster.App
+api-version: 1.13
+author: Bill2015
+softdepend: [Vault]
+
