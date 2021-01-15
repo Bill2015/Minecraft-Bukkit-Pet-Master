@@ -3,6 +3,7 @@ package com.bill.petmaster.util;
 import com.bill.petmaster.entity.CustomEntity;
 import com.bill.petmaster.holder.PetSkillMenuHolder;
 
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.LivingEntity;
@@ -14,7 +15,6 @@ public class EntityLevel {
     public EntityLevel(CustomEntity owner){
         this.owner = owner;
         this.entitySkill  = new EntitySkill( MUTIPLE );
-
     }
 
     //點屬性點 (傳遞位置進來判斷)

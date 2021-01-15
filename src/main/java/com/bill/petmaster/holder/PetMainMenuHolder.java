@@ -53,7 +53,7 @@ public class PetMainMenuHolder implements InventoryHolder {
         double maxHealth = owner.getEntity().getAttribute( Attribute.GENERIC_MAX_HEALTH ).getValue(); 
         //總共 40 根(單位血量)
         String healthBar    = setBar("生命值", owner.getEntity().getHealth(),  maxHealth, ChatColor.GREEN);
-        String foodBar      = setBar("飽食度", /* food.getFoodLevel()*/ 50,  /* food.getMaxFoodLevel()*/ 100, ChatColor.GOLD);
+        String foodBar      = setBar("飽食度", owner.getEntityHunger().getFoodValue(),  owner.getEntityHunger().getMaxFoodValue(), ChatColor.GOLD);
         itemMeta.setDisplayName( ChatColor.RED + owner.getName() + ChatColor.GRAY + " 的狀態");
         EntitySkill skill = owner.getEntityLevel().getEntitySkill();
         itemMeta.setLore( Arrays.asList(    healthBar, 
