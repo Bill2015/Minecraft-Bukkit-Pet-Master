@@ -1,10 +1,13 @@
 package com.bill.petmaster.entity;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.bill.petmaster.holder.PetInventoryHolder;
 import com.bill.petmaster.holder.PetMainMenuHolder;
+import com.bill.petmaster.holder.PetQuestHolder;
 import com.bill.petmaster.holder.PetSkillMenuHolder;
+import com.bill.petmaster.quest.PetQuest;
 import com.bill.petmaster.util.PetSkillPoint;
 import com.bill.petmaster.util.PetFoodType;
 import com.bill.petmaster.util.PetHunger;
@@ -19,10 +22,12 @@ import org.bukkit.SoundCategory;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -35,10 +40,12 @@ public abstract class CustomEntity {
     protected PetMainMenuHolder  menuHolder;        //main menu of pet
     protected PetSkillMenuHolder skillHolder;       //skill menu of pet
     protected PetInventoryHolder inventoryHolder;   //inventory pf pet
+    protected PetQuestHolder     questHolder;       //quest menu of pet
     protected String name;                          //pet name
 
     protected PetLevel petLevel;                    //pet level system
     protected float[] baseStatus;                   //pet base status
+    private int questItemDelay;                     //pet comsume quest item delay
 
     protected int lifeRegenDelay;                   //pet life regen delay
     protected float lifeRegen;                      //life regen of this pet
@@ -49,7 +56,7 @@ public abstract class CustomEntity {
 
     protected boolean isDead;
 
-    public CustomEntity(Mob entity, Player owner){
+    public CustomEntity(Mob entity, Player owner, List<PetQuest> petQuests){
         this.entity         = entity;
         this.owner          = owner;
         this.name           = "MyPet";
@@ -57,8 +64,9 @@ public abstract class CustomEntity {
         this.menuHolder     = new PetMainMenuHolder( this );
         this.skillHolder    = new PetSkillMenuHolder( this );
         this.inventoryHolder= new PetInventoryHolder( this );
-        this.petLevel    = new PetLevel( this );
-        this.petHunger   = new PetHunger( this, PetFoodType.FISHMEAT, 20.0f );
+        this.questHolder    = new PetQuestHolder( petQuests ); 
+        this.petLevel       = new PetLevel( this, petQuests );
+        this.petHunger      = new PetHunger( this, PetFoodType.FISHMEAT, 20.0f );
         this.baseStatus     = new float[]{
             5.0f,   // Damage
             0.0f,   // Armor
@@ -71,6 +79,7 @@ public abstract class CustomEntity {
         petLevel.getPetSkill().addSkillPoint( (short)20 );
 
         updateStatus();
+
     }
 
     /** get this pet */
@@ -92,6 +101,10 @@ public abstract class CustomEntity {
     /** get this pet chest inventory gui */
     public PetInventoryHolder getInventoryHolder() {
         return inventoryHolder;
+    }
+    /** get this qeust of pet */
+    public PetQuestHolder getQuestHolder(){
+        return questHolder;
     }
     /** get this entityLevel of pet  */
     public PetLevel getPetLevel() {
@@ -151,11 +164,12 @@ public abstract class CustomEntity {
 
     /** a tick update */
     public void updateTick( Plugin plugin ){
-        if( entity.isDead() == false && entity.isValid() ){
+        if( isDead == false && entity.isValid() ){
             lifeRegeneration();     //pet life regen
             updateHunger();         //pet getting hunger
-            consumeFood( plugin );   //pet comsume food
+            consumeFood( plugin );  //pet consume food
             checkTarget();          //detect the target are valid
+            comsumeQuestItem( plugin );     //pet consume quest item
         }
     }
 
@@ -205,9 +219,39 @@ public abstract class CustomEntity {
 
     //=========================================================================================
     //=======================             enity updater             ===========================
+    private void comsumeQuestItem( Plugin plugin ){
+        if( questItemDelay++ >= PetLevel.QUEST_ITEM_COMSUME_DELAY ){
+            questItemDelay = 0;
+            // consume quest item
+            Material material = null;
+            if( (material = petLevel.consumeQuestItem( inventoryHolder.getInventory() ) ) != null ){
+                // check is complete
+                if( petLevel.checkLevelUp() ){
+                    questHolder.updateItem( petLevel.getNowQuest(), petLevel.getObjectives(), petLevel.getLevel(), true );
+                    petLevel.levelUp();
+                }
+                else {
+                    entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation(), 10, 0.1, 0.1, 0.1, 0.025, null, false);
+                    entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP , 1.0f, 1.0f );
+                    entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_ITEM_PICKUP , 1.0f, 1.0f );
+                    questHolder.updateItem( petLevel.getNowQuest(), petLevel.getObjectives(), petLevel.getLevel(), false );
+                    
+                    Item item = entity.getWorld().dropItemNaturally( entity.getLocation(),  new ItemStack( material ) );
+                    item.setPickupDelay( Integer.MAX_VALUE );
+                    
+                    new BukkitRunnable(){
+                        @Override public void run(){
+                            item.remove();
+                        }
+                    }.runTaskLater(plugin, 60);
+                } 
+            }
+        }
+    }
     /** the life regeneration of pet, every tick check once */
     private void lifeRegeneration(){
         if( petLevel.getPetSkill().getValue( PetSkillPoint.REGEN ) != 0){
+            lifeRegenDelay = 0;
             if( lifeRegenDelay++ >= (1200 / lifeRegen ) ){
                 //必須要有飽食度
                 if( !petHunger.isHunger() ){
@@ -218,7 +262,6 @@ public abstract class CustomEntity {
                     }
                     updateStatus();             //更新狀態
                 }
-                lifeRegenDelay = 0;
             }
         }
     }
@@ -226,20 +269,22 @@ public abstract class CustomEntity {
     private void consumeFood( Plugin plugin ){
         if( (foodCosumeDelay += 1) >= PetHunger.FOOD_COSUME_TIME ){
             foodCosumeDelay = 0;
-            //消耗食物 回復飽食度
-            Material isEeating = petHunger.consumeFood( inventoryHolder.getInventory() );
-            if(isEeating != null){  
-                for(int i = 0; i < 9; i++){
-                    final int j = i;
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            entity.getWorld().spawnParticle(Particle.ITEM_CRACK, entity.getEyeLocation(), 5, 0.05, 0.05, 0.05, 0.025, new ItemStack( isEeating ), false);
-                            entity.getWorld().playSound( entity.getEyeLocation(), Sound.ENTITY_CAT_EAT, SoundCategory.AMBIENT, 1.0f, 1.0f );
-                            if(j == 8)entity.getWorld().playSound( entity.getEyeLocation(), Sound.ENTITY_FOX_EAT, SoundCategory.AMBIENT, 1.0f, 1.0f );
-                            this.cancel();
-                        }
-                    }.runTaskLaterAsynchronously(plugin, i * 4 );
+            if( petHunger.isFull() == false ){
+                //消耗食物 回復飽食度
+                Material isEeating = petHunger.consumeFood( inventoryHolder.getInventory() );
+                if(isEeating != null){  
+                    for(int i = 0; i < 9; i++){
+                        final int j = i;
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                entity.getWorld().spawnParticle(Particle.ITEM_CRACK, entity.getEyeLocation(), 5, 0.05, 0.05, 0.05, 0.025, new ItemStack( isEeating ), false);
+                                entity.getWorld().playSound( entity.getEyeLocation(), Sound.ENTITY_CAT_EAT, SoundCategory.AMBIENT, 1.0f, 1.0f );
+                                if(j == 8)entity.getWorld().playSound( entity.getEyeLocation(), Sound.ENTITY_FOX_EAT, SoundCategory.AMBIENT, 1.0f, 1.0f );
+                                this.cancel();
+                            }
+                        }.runTaskLaterAsynchronously(plugin, i * 4 );
+                    }
                 }
             }
         }

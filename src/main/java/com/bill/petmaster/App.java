@@ -30,7 +30,7 @@ public final class App extends JavaPlugin {
         dataManager     = new DataManager();
         questManager    = new QuestManager( this, messageManager );
 
-        getServer().getPluginManager().registerEvents(new PetEvent(this, dataManager, itemManeger), this);
+        getServer().getPluginManager().registerEvents(new PetEvent(this, dataManager, itemManeger, questManager), this);
         getServer().getPluginManager().registerEvents(new ItemUseEvent(this, dataManager, itemManeger), this);
 
 

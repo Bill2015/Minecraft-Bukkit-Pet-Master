@@ -29,7 +29,7 @@ public class PetMainMenuHolder implements InventoryHolder {
     public final static int HEATL_SLOT = 7;
     public final static int SKILL_SLOT = 16;
     public final static int CHEST_SLOT = 34;
-    public final static int LEVEL_SLOT = 33;
+    public final static int QUEST_SLOT = 33;
 
     private final CustomEntity owner;
     public PetMainMenuHolder(CustomEntity owner){

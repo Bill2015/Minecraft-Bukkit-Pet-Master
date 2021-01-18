@@ -56,12 +56,20 @@ public class QuestManager {
             for (Object lvltemp = root.get( String.valueOf( lvlcount ) ) ; lvltemp != null; lvlcount += 1, lvltemp = root.get( String.valueOf( lvlcount ) )) {
                 MemorySection lvlSection = (MemorySection)lvltemp;
 
-                String questName    = lvlSection.getString("questName");
-                Material material   = Material.matchMaterial( lvlSection.getString("representMaterial").toUpperCase() );
+                String questName            = lvlSection.getString("questName");
+                Material representMaterial  = Material.matchMaterial( lvlSection.getString("representMaterial").toUpperCase() );
+                Material finishMaterial     = Material.matchMaterial( lvlSection.getString("finishedMaterial").toUpperCase() );
+
                 // if can't find represent material
-                if( material == null ){
+                if( representMaterial == null ){
                     questName = "Material Not found, set dirt as default";
-                    material = Material.DIRT;
+                    representMaterial = Material.DIRT;
+                    messageManager.sendQuestDataLoadMissingMaterial( lvlcount );
+                }
+                // if can't find finished material
+                if( finishMaterial == null ){
+                    questName = "Material Not found, set dirt as default";
+                    finishMaterial = Material.DIRT;
                     messageManager.sendQuestDataLoadMissingMaterial( lvlcount );
                 }
                 int points          = lvlSection.getInt("points");
@@ -70,11 +78,11 @@ public class QuestManager {
                 //judge which type of quest
                 if( questType.equals( PetQuest.ITEM ) ){
                     ItemQuestMap itemMap = getItemQuest(lvlSection, lvlcount);
-                    questList.add( new PetQuest(questType, questName, material, points, itemMap ) );
+                    questList.add( new PetQuest(questType, questName, representMaterial, finishMaterial, points, itemMap ) );
                 }
                 else if( questType.equals( PetQuest.ENTITY  ) ){
                     EntityQuestMap entityMap = getEntityQuest(lvlSection, lvlcount);
-                    questList.add( new PetQuest(questType, questName, material, points, entityMap ) );
+                    questList.add( new PetQuest(questType, questName, representMaterial, finishMaterial, points, entityMap ) );
                 }
                 else{
                     messageManager.sendQuestDataLoadQuestTypeNotFound( lvlcount );
@@ -90,11 +98,15 @@ public class QuestManager {
         EntityQuestMap entityMap = new EntityQuestMap();
 
         int objectiveCount = 0;
-        for (Object objtemp = lvlSection.get( String.join(".", "objectives", String.valueOf( objectiveCount ) )  ) ; objtemp != null; objectiveCount += 1, objtemp = lvlSection.get( String.join(".", "objectives", String.valueOf( objectiveCount ) )  )) {
+        for (Object objtemp = lvlSection.get( String.join(".", "objectives", String.valueOf( objectiveCount ) )  ) ; 
+                    objtemp != null; 
+                        objectiveCount += 1, objtemp = lvlSection.get( String.join(".", "objectives", String.valueOf( objectiveCount ) )  )) {
+
             MemorySection objSection = (MemorySection)objtemp;
             String objName              = objSection.getString("name");
             int requireAmount           = objSection.getInt("require");
             EntityType objEntity        = EntityType.fromName( objSection.getString("key").toUpperCase() );
+
             // check objective item is exist
             if( objEntity == null ){
                 objName = "Entity Not found, set chicken as default";
@@ -110,11 +122,15 @@ public class QuestManager {
         ItemQuestMap itmeMap = new ItemQuestMap();
 
         int objectiveCount = 0;
-        for (Object objtemp = lvlSection.get( String.join(".", "objectives", String.valueOf( objectiveCount ) ) ) ; objtemp != null; objectiveCount += 1, objtemp = lvlSection.get( String.join(".", "objectives", String.valueOf( objectiveCount ) ) ) ) {
+        for (Object objtemp = lvlSection.get( String.join(".", "objectives", String.valueOf( objectiveCount ) ) ) ; 
+                objtemp != null; objectiveCount += 1, 
+                    objtemp = lvlSection.get( String.join(".", "objectives", String.valueOf( objectiveCount ) ) ) ) {
+
             MemorySection objSection = (MemorySection)objtemp;
             String objName          = objSection.getString("name");
             int requireAmount       = objSection.getInt("require");
             Material objMaterial    = Material.matchMaterial( objSection.getString("key").toUpperCase() );
+
             // check objective item is exist
             if( objMaterial == null ){
                 objName = "Material Not found, set dirt as default";

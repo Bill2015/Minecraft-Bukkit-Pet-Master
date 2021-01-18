@@ -15,7 +15,6 @@ public class ItemObjective extends PetObjective{
         this.material = material;
     }
 
-
     /** <p>get quest type of material</p>
      * @return {@link Material}  material*/
     public Material getMaterial() {

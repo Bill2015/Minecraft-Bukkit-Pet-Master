@@ -12,9 +12,11 @@ import com.bill.petmaster.entity.CustomEntity;
 import com.bill.petmaster.entity.MasterCat;
 import com.bill.petmaster.holder.PetInventoryHolder;
 import com.bill.petmaster.holder.PetMainMenuHolder;
+import com.bill.petmaster.holder.PetQuestHolder;
 import com.bill.petmaster.holder.PetSkillMenuHolder;
 import com.bill.petmaster.manager.DataManager;
 import com.bill.petmaster.manager.ItemManeger;
+import com.bill.petmaster.manager.QuestManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -50,10 +52,12 @@ public class PetEvent implements Listener{
     private App plugin;
     private DataManager dataManager;
     private ItemManeger itemManeger;
-    public PetEvent(App plugin, DataManager dataManager, ItemManeger itemManeger){
+    private QuestManager questManager;
+    public PetEvent(App plugin, DataManager dataManager, ItemManeger itemManeger, QuestManager questManager){
         this.plugin = plugin;
-        this.dataManager = dataManager;
-        this.itemManeger = itemManeger;
+        this.dataManager    = dataManager;
+        this.itemManeger    = itemManeger;
+        this.questManager   = questManager;
         updaterTick();
     }    
 
@@ -93,6 +97,10 @@ public class PetEvent implements Listener{
                     mainHolder.updateStatus();
                     player.openInventory( mainHolder.getOwner().getInventoryHolder().getInventory()  );
                 }
+                if( event.getRawSlot() == PetMainMenuHolder.QUEST_SLOT ){
+                    mainHolder.updateStatus();
+                    player.openInventory( mainHolder.getOwner().getQuestHolder().getInventory()  );
+                }
                 event.setCancelled( true );
                 return;
             }
@@ -100,6 +108,12 @@ public class PetEvent implements Listener{
             else if( holder instanceof PetSkillMenuHolder ){
                 PetSkillMenuHolder skillHolder = (PetSkillMenuHolder)holder;
                 skillHolder.getOwner().getPetLevel().useSkillPoint( event.getRawSlot() );
+                event.setCancelled( true );
+                return;
+            }
+            // player view qeust 
+            else if( holder instanceof PetQuestHolder ){
+                PetQuestHolder questHolder = (PetQuestHolder)holder;
                 event.setCancelled( true );
                 return;
             }
@@ -151,7 +165,7 @@ public class PetEvent implements Listener{
                         player.openInventory( cat.getMenuHolder().getInventory() );
                     }
                     else{
-                        MasterCat cat = new MasterCat( ((Cat)entity), event.getPlayer() );
+                        MasterCat cat = new MasterCat( ((Cat)entity), event.getPlayer(), questManager.getQuests()  );
                         dataManager.getPetsMap().put( entity.getUniqueId(), cat );
                         player.openInventory( cat.getMenuHolder().getInventory() );
                     }
@@ -215,9 +229,7 @@ public class PetEvent implements Listener{
                     return;
                 }
             }
-
         }
-
     }
 
     // update evey tick

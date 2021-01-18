@@ -3,8 +3,8 @@ package com.bill.petmaster.quest;
 
 public abstract class PetObjective{
     private final String name;              //display item or entity  name
-    private final String info;              //whole data string
     private final int requireAmount;        //Require mob require amount
+    private int nowAmount = 0;
     /**
      * construct a Quest item or entity object
      * @param name display item or entity name
@@ -13,7 +13,21 @@ public abstract class PetObjective{
     public PetObjective( String name, int requireAmount ){
         this.name               = name;
         this.requireAmount      = requireAmount;
-        this.info               = String.join("", name, " ( ", "0", "/", String.valueOf( requireAmount ), " )" );
+    }
+    public PetObjective( PetObjective obj ){
+        this.name               = obj.name;
+        this.requireAmount      = obj.requireAmount;
+        this.nowAmount          = obj.nowAmount;
+    }
+    /** add targer object amount 
+     *  @param amount amount */
+    public void addProgress( int amount ){
+        nowAmount += amount;
+    }
+    /** judge progress are exceed requireAmount 
+     *  @return {@link Boolean} true exceeded, false not yet*/
+    public boolean isFinished(){
+        return nowAmount >= requireAmount;
     }
     /** get this quest item or entity name  
      *  @return {@link String} item name*/
@@ -28,6 +42,6 @@ public abstract class PetObjective{
     /** get whole string concat of info 
      *  @return {@link String} item info */
     public String getInfo() {
-        return info;
+        return String.join("", name, " ( ", String.valueOf( nowAmount ), " / ", String.valueOf( requireAmount ), " )" );
     }
 }
