@@ -2,7 +2,9 @@ package com.bill.petmaster.manager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.bill.petmaster.App;
 import com.bill.petmaster.quest.EntityObjective;
@@ -18,7 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 
 public class QuestManager {
-    private List<PetQuest> quests;
+    private Map<Integer, PetQuest> quests;
     private FileConfiguration dataConfig;
     private final App plugin;
     private final MessageManager messageManager;
@@ -33,20 +35,23 @@ public class QuestManager {
     }
 
     /** get the quest of pet List
-     *  @return {@link List} qeust List*/
-    public List<PetQuest> getQuests() {
+     *  @return {@link Map} qeust List*/
+    public Map<Integer, PetQuest> getQuests() {
         return quests;
     }
 
-    private List<PetQuest> loadQuestData(){
-        List<PetQuest> questList = new ArrayList<>();
+    private Map<Integer, PetQuest> loadQuestData(){
+        Map<Integer, PetQuest> questMap = new HashMap<>();
         //get root of file
         if( dataConfig.get("quest") instanceof MemorySection ){
             MemorySection root = (MemorySection)dataConfig.get("quest");
             int lvlcount = 1;
 
             //get each lvl data
-            for (Object lvltemp = root.get( String.valueOf( lvlcount ) ) ; lvltemp != null; lvlcount += 1, lvltemp = root.get( String.valueOf( lvlcount ) )) {
+            for (Object lvltemp = root.get( String.valueOf( lvlcount ) ) ; 
+                    lvltemp != null; 
+                        lvlcount += 1, lvltemp = root.get( String.valueOf( lvlcount ) )) {
+
                 MemorySection lvlSection = (MemorySection)lvltemp;
 
                 String questName            = lvlSection.getString("questName");
@@ -71,11 +76,11 @@ public class QuestManager {
                 //judge which type of quest
                 if( questType.equals( PetQuest.ITEM ) ){
                     ItemQuestMap itemMap = getItemQuest(lvlSection, lvlcount);
-                    questList.add( new PetQuest(questType, questName, representMaterial, finishMaterial, points, itemMap ) );
+                    questMap.put( lvlcount, new PetQuest(questType, questName, representMaterial, finishMaterial, points, itemMap ) );
                 }
                 else if( questType.equals( PetQuest.ENTITY  ) ){
                     EntityQuestMap entityMap = getEntityQuest(lvlSection, lvlcount);
-                    questList.add( new PetQuest(questType, questName, representMaterial, finishMaterial, points, entityMap ) );
+                    questMap.put( lvlcount,new PetQuest(questType, questName, representMaterial, finishMaterial, points, entityMap ) );
                 }
                 else{
                     messageManager.sendQuestDataLoadQuestTypeNotFound( lvlcount );
@@ -83,7 +88,7 @@ public class QuestManager {
 
             }
         }
-        return questList;
+        return questMap;
     }
 
 
@@ -164,7 +169,7 @@ public class QuestManager {
     /** just for test */
     private void printResult(){
         plugin.getLogger().info( "Print Pet Quest Data");
-        for (PetQuest petQuest : quests) {
+        for (PetQuest petQuest : quests.values() ) {
             plugin.getLogger().info( petQuest.getQuestName() );
 
             if( petQuest.getQuestObjective() instanceof ItemQuestMap ){

@@ -30,16 +30,16 @@ public class PetLevel {
     protected List<PetObjective> objectives;
     
     protected final CustomEntity owner;
-    protected final List<PetQuest> petQuests;
+    protected final Map<Integer, PetQuest> petQuests;
 
     public final static int QUEST_ITEM_COMSUME_DELAY = 100;
     private final static float MUTIPLE[] = {5.0f, 2.0f, 10.0f, 5.0f, 5.0f, 10.0f, 1.0f};
-    public PetLevel(CustomEntity owner, List<PetQuest> petQuests){
+    public PetLevel(CustomEntity owner, Map<Integer, PetQuest>  petQuests){
         this.owner          = owner;
         this.petQuests      = petQuests;
         this.level          = 1;
-        this.petAttribute       = new PetAttribute( MUTIPLE );
-        this.nowQuest       = petQuests.get( level - 1 );
+        this.petAttribute   = new PetAttribute( MUTIPLE );
+        this.nowQuest       = petQuests.get( level );
 
         objectives = nowQuest.cloneObjective();
     }
@@ -163,7 +163,7 @@ public class PetLevel {
 
         // setting
         level += 1;
-        nowQuest = petQuests.get( level - 1 );
+        nowQuest = petQuests.get( level );
         // copy new objective
         objectives = nowQuest.cloneObjective();
 

@@ -2,6 +2,7 @@ package com.bill.petmaster.entity;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.bill.petmaster.holder.PetInventoryHolder;
 import com.bill.petmaster.holder.PetMainMenuHolder;
@@ -57,7 +58,7 @@ public abstract class CustomEntity {
 
     protected boolean isDead;
 
-    public CustomEntity(Mob entity, Player owner, List<PetQuest> petQuests){
+    public CustomEntity(Mob entity, Player owner, Map<Integer, PetQuest>  petQuests){
         this.entity         = entity;
         this.owner          = owner;
         this.name           = "MyPet";
