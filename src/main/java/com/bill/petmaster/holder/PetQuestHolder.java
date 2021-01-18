@@ -81,7 +81,7 @@ public class PetQuestHolder implements InventoryHolder {
                 ChatColor.GRAY   + "Objective : "
             ) );
         // obj name
-        for (PetObjective obj : petLevel.getObjectives() ) {
+        for (PetObjective obj : petLevel.getObjectives().values() ) {
             lore.add(  ChatColor.YELLOW  + "  " + (obj.isFinished() ? ChatColor.STRIKETHROUGH : "") + obj.getInfo() );
         }
 

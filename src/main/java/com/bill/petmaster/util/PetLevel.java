@@ -27,7 +27,7 @@ public class PetLevel {
     protected int level;
     protected PetAttribute petAttribute;
     protected PetQuest nowQuest;
-    protected List<PetObjective> objectives;
+    protected Map<String, PetObjective> objectives;
     
     protected final CustomEntity owner;
     protected final Map<Integer, PetQuest> petQuests;
@@ -48,7 +48,7 @@ public class PetLevel {
     public PetAttribute getPetAttribute() {
         return petAttribute;
     }
-    public List<PetObjective> getObjectives() {
+    public Map<String, PetObjective> getObjectives() {
         return objectives;
     }
     public PetQuest getNowQuest() {
@@ -93,24 +93,21 @@ public class PetLevel {
         //judge the quest type
         if( nowQuest.getQuestType().equals( PetQuest.ITEM ) ){
 
-            int objCount = 0;
-            for(PetObjective petObj : objectives ){
+            for(PetObjective petObj : objectives.values() ){
                 Material material = ((ItemObjective)petObj).getMaterial();
                 
                 int slot = -1;
                 //check this progress are finished
-                if( objectives.get( objCount ).isFinished() == false ){
+                if( petObj.isFinished() == false ){
                     //get quest item slot
                     if( (slot = inventory.first( material )) != -1 ){
                         //quest item decreased
                         inventory.setItem(slot, new ItemStack( material , inventory.getItem(slot).getAmount() - 1)  );
                         //quest progress add
-                        objectives.get( objCount ).addProgress( 1 );                    
+                        petObj.addProgress( 1 );                    
                         return material;
                     }
                 }
-
-                objCount += 1;
             }
            
         }
@@ -124,19 +121,18 @@ public class PetLevel {
         //judge the quest type
         if( nowQuest.getQuestType().equals( PetQuest.ENTITY ) ){
 
-            int objCount = 0;
-            for(PetObjective petObj : objectives ){
+            PetObjective petObj = objectives.get( entityType.toString() );
+            if( petObj != null ){
                 EntityType type = ((EntityObjective)petObj).getEntityType();
 
                 //check the entity type
                 if( entityType == type ){
                     //check this progress are finished
-                    if( objectives.get( objCount ).isFinished() == false ){
-                        objectives.get( objCount ).addProgress( 1 );  
+                    if( petObj.isFinished() == false ){
+                        petObj.addProgress( 1 );  
                         return true;
                     }
                 }
-                objCount += 1;
             }
         }
         return false;
@@ -144,7 +140,7 @@ public class PetLevel {
     /** Check this pet are finish all objective
      * @return {@link Boolean} true if complete, else false */
     public boolean checkLevelUp( ){
-        for (PetObjective obj : objectives) {
+        for (PetObjective obj : objectives.values() ) {
             if( obj.isFinished() == false ){
                 return false;
             }

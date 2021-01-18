@@ -35,6 +35,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 public abstract class CustomEntity {
     protected Mob entity;                               //current pet
@@ -228,9 +229,9 @@ public abstract class CustomEntity {
                 attributeHolder.updateStatus();
             }
             else {
-                entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation(), 10, 0.1, 0.1, 0.1, 0.025, null, false);
-                entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP , 1.0f, 1.0f );
-                entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_ITEM_PICKUP , 1.0f, 1.0f );
+                entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getEyeLocation(), 10, 0.1, 0.1, 0.1, 0.025, null, false);
+                entity.getWorld().playSound( entity.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP , 1.0f, 1.0f );
+                entity.getWorld().playSound( entity.getEyeLocation(), Sound.ENTITY_ITEM_PICKUP , 1.0f, 1.0f );
                 questHolder.updateItem( petLevel, false );
                 
             } 
@@ -252,13 +253,14 @@ public abstract class CustomEntity {
                     attributeHolder.updateStatus();
                 }
                 else {
-                    entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation(), 10, 0.1, 0.1, 0.1, 0.025, null, false);
-                    entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP , 1.0f, 1.0f );
-                    entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_ITEM_PICKUP , 1.0f, 1.0f );
+                    entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getEyeLocation(), 10, 0.1, 0.1, 0.1, 0.025, null, false);
+                    entity.getWorld().playSound( entity.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP , 1.0f, 1.0f );
+                    entity.getWorld().playSound( entity.getEyeLocation(), Sound.ENTITY_ITEM_PICKUP , 1.0f, 1.0f );
                     questHolder.updateItem( petLevel, false );
                     
                     Item item = entity.getWorld().dropItemNaturally( entity.getLocation(),  new ItemStack( material ) );
                     item.setPickupDelay( Integer.MAX_VALUE );
+                    item.setVelocity( new Vector(0.0, 0.25, 0.0) );
                     
                     new BukkitRunnable(){
                         @Override public void run(){

@@ -1,7 +1,10 @@
 package com.bill.petmaster.quest;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 
@@ -30,13 +33,20 @@ public class PetQuest{
         this.questObjective     = questObjective;
     }
     /** get clone objective for every pet 
-     *  @return {@link List} a cloned objective list */
-    public List<PetObjective> cloneObjective(){
-        ArrayList<PetObjective> list = new ArrayList<>();
+     *  @return {@link Map} a cloned objective list */
+    public Map<String, PetObjective> cloneObjective(){
+        Map<String, PetObjective> map = new HashMap<>();
         for (PetObjective obj : questObjective.values() ) {
-            list.add( obj.cloneObjective() );
+            if( obj instanceof ItemObjective ){
+                ItemObjective itemObj = (ItemObjective)obj;
+                map.put( itemObj.getMaterial().toString(), obj.cloneObjective() );
+            }
+            else{
+                EntityObjective entityObj = (EntityObjective)obj;
+                map.put( entityObj.getEntityType().toString(), obj.cloneObjective() );
+            }
         }
-        return list;
+        return map;
     }
     /** get this quest name 
      *  @return {@link String} quest name*/
