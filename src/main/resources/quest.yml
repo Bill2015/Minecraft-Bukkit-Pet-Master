@@ -5,31 +5,31 @@ quest:
     questName: A0
     representMaterial: STONE
     finishedMaterial: LIME_STAINED_GLASS_PANE
-    point: 1
+    points: 1
     objectives:
       0:
         name: 經驗瓶
         key: EXPERIENCE_BOTTLE
-        require: 2
+        require: 1
   # =========================
   2:
     type: item
     questName: A1
     representMaterial: STONE
     finishedMaterial: LIME_STAINED_GLASS_PANE
-    point: 1
+    points: 1
     objectives:
       0:
         name: 經驗瓶
         key: EXPERIENCE_BOTTLE
-        require: 3
+        require: 1
   # =========================
   3:
     type: item
     questName: A2
     representMaterial: STONE
     finishedMaterial: LIME_STAINED_GLASS_PANE
-    point: 1
+    points: 1
     objectives:
       0:
         name: 經驗瓶
@@ -41,37 +41,29 @@ quest:
     questName: A3
     representMaterial: STONE
     finishedMaterial: LIME_STAINED_GLASS_PANE
-    point: 1
+    points: 1
     objectives:
       0:
         name: 經驗瓶
         key: EXPERIENCE_BOTTLE
-        require: 5
+        require: 1
       1:
         name: 鑽石
         key: DIAMOND
-        require: 5
-      2:
-        name: 鑽石
-        key: DIAMONDs
-        require: 5
+        require: 1
   # =========================
   5:
     type: entity
     questName: B0
     representMaterial: COAL_BLOCK
     finishedMaterial: LIME_STAINED_GLASS_PANE
-    point: 3
+    points: 3
     objectives:
       0:
         name: 殭屍
         key: ZOMBIE
         require: 3
       1:
-        name: 殭屍
-        key: ZOMBIEa
-        require: 3
-      2:
         name: 史萊姆
         key: SLIME
         require: 3

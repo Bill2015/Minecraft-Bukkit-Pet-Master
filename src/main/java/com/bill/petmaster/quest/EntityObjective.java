@@ -13,7 +13,7 @@ public class EntityObjective extends PetObjective{
     }
     /** <p>get quest type of entityType</p>
      * @return {@link EntityType}  entity type*/
-    public EntityType getMaterial() {
+    public EntityType getEntityType() {
         return entityType;
     }
 

@@ -6,13 +6,13 @@ import java.util.List;
 import com.bill.petmaster.holder.PetInventoryHolder;
 import com.bill.petmaster.holder.PetMainMenuHolder;
 import com.bill.petmaster.holder.PetQuestHolder;
-import com.bill.petmaster.holder.PetSkillMenuHolder;
+import com.bill.petmaster.holder.PetAttributeMenuHolder;
 import com.bill.petmaster.quest.PetQuest;
-import com.bill.petmaster.util.PetSkillPoint;
+import com.bill.petmaster.util.AttributePoint;
 import com.bill.petmaster.util.PetFoodType;
 import com.bill.petmaster.util.PetHunger;
 import com.bill.petmaster.util.PetLevel;
-import com.bill.petmaster.util.PetSkill;
+import com.bill.petmaster.util.PetAttribute;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,6 +22,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
@@ -35,24 +36,24 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 public abstract class CustomEntity {
-    protected Mob entity;                           //current pet
-    protected Player owner;                         //owner of pet (only player)
-    protected PetMainMenuHolder  menuHolder;        //main menu of pet
-    protected PetSkillMenuHolder skillHolder;       //skill menu of pet
-    protected PetInventoryHolder inventoryHolder;   //inventory pf pet
-    protected PetQuestHolder     questHolder;       //quest menu of pet
-    protected String name;                          //pet name
+    protected Mob entity;                               //current pet
+    protected Player owner;                             //owner of pet (only player)
+    protected PetMainMenuHolder  menuHolder;            //main menu of pet
+    protected PetAttributeMenuHolder attributeHolder;   //Attribute menu of pet
+    protected PetInventoryHolder inventoryHolder;       //inventory pf pet
+    protected PetQuestHolder     questHolder;           //quest menu of pet
+    protected String name;                              //pet name
 
-    protected PetLevel petLevel;                    //pet level system
-    protected float[] baseStatus;                   //pet base status
-    private int questItemDelay;                     //pet comsume quest item delay
+    protected PetLevel petLevel;                        //pet level system
+    protected float[] baseStatus;                       //pet base status
+    private int questItemDelay;                         //pet comsume quest item delay
 
-    protected int lifeRegenDelay;                   //pet life regen delay
-    protected float lifeRegen;                      //life regen of this pet
+    protected int lifeRegenDelay;                       //pet life regen delay
+    protected float lifeRegen;                          //life regen of this pet
 
-    protected PetHunger petHunger;                  //pet's hunger
-    protected int foodDelay;                        //pet food delay
-    protected int foodCosumeDelay;                  //pet cosume delay
+    protected PetHunger petHunger;                      //pet's hunger
+    protected int foodDelay;                            //pet food delay
+    protected int foodCosumeDelay;                      //pet cosume delay
 
     protected boolean isDead;
 
@@ -62,7 +63,7 @@ public abstract class CustomEntity {
         this.name           = "MyPet";
         this.isDead         = false;
         this.menuHolder     = new PetMainMenuHolder( this );
-        this.skillHolder    = new PetSkillMenuHolder( this );
+        this.attributeHolder    = new PetAttributeMenuHolder( this );
         this.inventoryHolder= new PetInventoryHolder( this );
         this.questHolder    = new PetQuestHolder( petQuests ); 
         this.petLevel       = new PetLevel( this, petQuests );
@@ -76,10 +77,9 @@ public abstract class CustomEntity {
             20.0f,  // Food Capcity
             0       // Life Regen
         };
-        petLevel.getPetSkill().addSkillPoint( (short)20 );
+        petLevel.getPetAttribute().addAttributePoint( (short)20 );
 
         updateStatus();
-
     }
 
     /** get this pet */
@@ -94,9 +94,9 @@ public abstract class CustomEntity {
     public PetMainMenuHolder getMenuHolder() {
         return menuHolder;
     }
-    /** get this pet skill inventory gui */
-    public PetSkillMenuHolder getSkillHolder() {
-        return skillHolder;
+    /** get this pet attribute inventory gui */
+    public PetAttributeMenuHolder getAttributeHolder() {
+        return attributeHolder;
     }
     /** get this pet chest inventory gui */
     public PetInventoryHolder getInventoryHolder() {
@@ -158,7 +158,7 @@ public abstract class CustomEntity {
     /** a interface update */
     public void updateStatus(){
         menuHolder.updateStatus();
-        skillHolder.updateStatus();
+        attributeHolder.updateStatus();
         updateAttribute();
     }
 
@@ -176,31 +176,31 @@ public abstract class CustomEntity {
 
     /** update Attribute of pet */
     private void updateAttribute(){
-        PetSkill skill = petLevel.getPetSkill();
+        PetAttribute petAttribute = petLevel.getPetAttribute();
         //傷害  (% 數)
         entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue( 
-            skill.getValue( PetSkillPoint.DAMAGE ) * baseStatus[ PetSkillPoint.DAMAGE.get() ] 
+            petAttribute.getValue( AttributePoint.DAMAGE ) * baseStatus[ AttributePoint.DAMAGE.get() ] 
         );
         //裝甲值 初始為0.0
         entity.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue( 
-            skill.getValue( PetSkillPoint.ARMOR ) + baseStatus[ PetSkillPoint.ARMOR.get() ]
+            petAttribute.getValue( AttributePoint.ARMOR ) + baseStatus[ AttributePoint.ARMOR.get() ]
         );
         //最大血量 (% 數)
         entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue( 
-            skill.getValue( PetSkillPoint.HEALTH ) * baseStatus[ PetSkillPoint.HEALTH.get() ] 
+            petAttribute.getValue( AttributePoint.HEALTH ) * baseStatus[ AttributePoint.HEALTH.get() ] 
         );
         //移動速度 (% 數)
         entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue( 
-            skill.getValue( PetSkillPoint.SPEED ) * baseStatus[ PetSkillPoint.SPEED.get() ] 
+            petAttribute.getValue( AttributePoint.SPEED ) * baseStatus[ AttributePoint.SPEED.get() ] 
         );
         //擊退抗性 初始值0.0 最大值1.0 % 數
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue( 
-            skill.getValue( PetSkillPoint.RESIST ) * baseStatus[ PetSkillPoint.RESIST.get() ]
+            petAttribute.getValue( AttributePoint.RESIST ) * baseStatus[ AttributePoint.RESIST.get() ]
         );
         //食物量
-        petHunger.setMaxFoodLevel( skill.getValue( PetSkillPoint.FOOD ) * baseStatus[ PetSkillPoint.FOOD.get() ] );
+        petHunger.setMaxFoodLevel( petAttribute.getValue( AttributePoint.FOOD ) * baseStatus[ AttributePoint.FOOD.get() ] );
         //回血速度  初始為0.0
-        lifeRegen = skill.getValue( PetSkillPoint.REGEN );
+        lifeRegen = petAttribute.getValue( AttributePoint.REGEN );
     }
 
     
@@ -216,6 +216,25 @@ public abstract class CustomEntity {
             entity.setHealth( Math.max( (entity.getHealth() + val), 0 )  );
         }
     }
+    //=========================================================================================
+    //=======================             event updater             ===========================
+    public void killingQuestMob( EntityType entityType ){
+        if( petLevel.killingQuestMob( entityType ) == true ){
+            // check is complete
+            if( petLevel.checkLevelUp() ){
+                questHolder.updateItem( petLevel, true );
+                petLevel.levelUp();
+                attributeHolder.updateStatus();
+            }
+            else {
+                entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation(), 10, 0.1, 0.1, 0.1, 0.025, null, false);
+                entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP , 1.0f, 1.0f );
+                entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_ITEM_PICKUP , 1.0f, 1.0f );
+                questHolder.updateItem( petLevel, false );
+                
+            } 
+        }
+    }
 
     //=========================================================================================
     //=======================             enity updater             ===========================
@@ -227,14 +246,15 @@ public abstract class CustomEntity {
             if( (material = petLevel.consumeQuestItem( inventoryHolder.getInventory() ) ) != null ){
                 // check is complete
                 if( petLevel.checkLevelUp() ){
-                    questHolder.updateItem( petLevel.getNowQuest(), petLevel.getObjectives(), petLevel.getLevel(), true );
+                    questHolder.updateItem( petLevel, true );
                     petLevel.levelUp();
+                    attributeHolder.updateStatus();
                 }
                 else {
                     entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation(), 10, 0.1, 0.1, 0.1, 0.025, null, false);
                     entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP , 1.0f, 1.0f );
                     entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_ITEM_PICKUP , 1.0f, 1.0f );
-                    questHolder.updateItem( petLevel.getNowQuest(), petLevel.getObjectives(), petLevel.getLevel(), false );
+                    questHolder.updateItem( petLevel, false );
                     
                     Item item = entity.getWorld().dropItemNaturally( entity.getLocation(),  new ItemStack( material ) );
                     item.setPickupDelay( Integer.MAX_VALUE );
@@ -243,14 +263,14 @@ public abstract class CustomEntity {
                         @Override public void run(){
                             item.remove();
                         }
-                    }.runTaskLater(plugin, 15);
+                    }.runTaskLater(plugin, 10);
                 } 
             }
         }
     }
     /** the life regeneration of pet, every tick check once */
     private void lifeRegeneration(){
-        if( petLevel.getPetSkill().getValue( PetSkillPoint.REGEN ) != 0){
+        if( petLevel.getPetAttribute().getValue( AttributePoint.REGEN ) != 0){
             lifeRegenDelay = 0;
             if( lifeRegenDelay++ >= (1200 / lifeRegen ) ){
                 //必須要有飽食度
@@ -260,7 +280,7 @@ public abstract class CustomEntity {
                     if( entity.getHealth() < entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() ){
                         foodDelay += 5;
                     }
-                    updateStatus();             //更新狀態
+                    menuHolder.updateStatus();             //更新狀態
                 }
             }
         }
@@ -297,7 +317,7 @@ public abstract class CustomEntity {
             if( (foodDelay += 1) >= PetHunger.DECREASE_FOOD_TIME ){
                 foodDelay = 0;
                 petHunger.addFoodValue( -1.0f );
-                updateStatus();
+                menuHolder.updateStatus();
             }
         }
         //假如沒有飽食度
@@ -306,7 +326,7 @@ public abstract class CustomEntity {
             if( (foodDelay += 1) >= PetHunger.DECREASE_LIFE_TIME ){
                 foodDelay = 0;
                 entity.damage( 1.0 );
-                updateStatus();
+                menuHolder.updateStatus();
             }
         }
     }

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.bill.petmaster.entity.CustomEntity;
-import com.bill.petmaster.util.PetSkillPoint;
-import com.bill.petmaster.util.PetSkill;
+import com.bill.petmaster.util.AttributePoint;
+import com.bill.petmaster.util.PetAttribute;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -56,14 +56,14 @@ public class PetNavigationHolder implements InventoryHolder{
         lore.add( foodBar );
         lore.add( "" );
         lore.add(  ChatColor.GRAY + "" + ChatColor.BOLD + "PROPERTY : " );
-        PetSkill skill = entity.getPetLevel().getPetSkill();
-        lore.add( PetSkillPoint.DAMAGE.getWhole( skill.getIncrement( PetSkillPoint.DAMAGE )) );
-        lore.add( PetSkillPoint.ARMOR.getWhole( skill.getIncrement( PetSkillPoint.ARMOR )) );
-        lore.add( PetSkillPoint.HEALTH.getWhole( skill.getIncrement( PetSkillPoint.HEALTH )) );
-        lore.add( PetSkillPoint.SPEED.getWhole( skill.getIncrement( PetSkillPoint.SPEED )) );
-        lore.add( PetSkillPoint.RESIST.getWhole( skill.getIncrement( PetSkillPoint.RESIST )) );
-        lore.add( PetSkillPoint.FOOD.getWhole( skill.getIncrement( PetSkillPoint.FOOD )) );
-        lore.add( PetSkillPoint.REGEN.getWhole( skill.getIncrement( PetSkillPoint.REGEN )) );
+        PetAttribute petAttribute = entity.getPetLevel().getPetAttribute();
+        lore.add( AttributePoint.DAMAGE.getWhole( petAttribute.getIncrement( AttributePoint.DAMAGE )) );
+        lore.add( AttributePoint.ARMOR.getWhole( petAttribute.getIncrement( AttributePoint.ARMOR )) );
+        lore.add( AttributePoint.HEALTH.getWhole( petAttribute.getIncrement( AttributePoint.HEALTH )) );
+        lore.add( AttributePoint.SPEED.getWhole( petAttribute.getIncrement( AttributePoint.SPEED )) );
+        lore.add( AttributePoint.RESIST.getWhole( petAttribute.getIncrement( AttributePoint.RESIST )) );
+        lore.add( AttributePoint.FOOD.getWhole( petAttribute.getIncrement( AttributePoint.FOOD )) );
+        lore.add( AttributePoint.REGEN.getWhole( petAttribute.getIncrement( AttributePoint.REGEN )) );
         lore.add( "" );
         lore.add( ChatColor.GRAY + "" + ChatColor.BOLD + "STATUS : " );
         if( entity.isDead() ){

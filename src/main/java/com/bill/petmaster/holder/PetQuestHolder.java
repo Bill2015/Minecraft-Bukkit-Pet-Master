@@ -10,6 +10,7 @@ import com.bill.petmaster.quest.ItemObjective;
 import com.bill.petmaster.quest.ItemQuestMap;
 import com.bill.petmaster.quest.PetObjective;
 import com.bill.petmaster.quest.PetQuest;
+import com.bill.petmaster.util.PetLevel;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,7 +40,7 @@ public class PetQuestHolder implements InventoryHolder {
 
         //lore setting
         ArrayList<String> lore = new ArrayList<>( 
-            Arrays.asList( "", 
+            Arrays.asList(
                 ChatColor.GRAY + "Quest Name : ",
                 ChatColor.AQUA + "  " + petQuest.getQuestName(),
                 "",
@@ -48,6 +49,11 @@ public class PetQuestHolder implements InventoryHolder {
         for (PetObjective obj : petQuest.getQuestObjective().values()) {
             lore.add(  ChatColor.YELLOW + "  " + obj.getInfo() );
         }
+
+        lore.add( "" );
+        lore.add( ChatColor.GRAY + "Reward : " );
+        lore.add( ChatColor.GOLD + "  " + petQuest.getPoint() + " Attribute Point" );
+
         lore.add( "" );
         lore.add( (ChatColor.BLUE + "In progress...") );
 
@@ -58,31 +64,37 @@ public class PetQuestHolder implements InventoryHolder {
         inventory.setItem(levelSlot, item);
     }
 
-    public void updateItem( PetQuest petQuest, List<PetObjective> objectives, int levelSlot, boolean isDone ){
+    public void updateItem( PetLevel petLevel, boolean isDone ){
        
+        PetQuest quest = petLevel.getNowQuest();
         //set represent material
-        ItemStack item = new ItemStack( (isDone == false) ? petQuest.getRepresent() : petQuest.getFinished() );
+        ItemStack item = new ItemStack( (isDone == false) ? quest.getRepresent() : quest.getFinished() );
         ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName( ChatColor.GOLD + "Level " + (levelSlot) + " Quest" );
+        itemMeta.setDisplayName( ChatColor.GOLD + "Level " + (petLevel.getLevel()) + " Quest" );
 
         ArrayList<String> lore = new ArrayList<>( 
             Arrays.asList(  
                 ChatColor.GRAY + "Quest Name : ",
-                ChatColor.AQUA + "  " + petQuest.getQuestName(),
+                ChatColor.AQUA + "  " + quest.getQuestName(),
                 "",
                 ChatColor.GRAY   + "Objective : "
             ) );
         // obj name
-        for (PetObjective obj : objectives) {
-            lore.add(  ChatColor.YELLOW + "  " + obj.getInfo() );
+        for (PetObjective obj : petLevel.getObjectives() ) {
+            lore.add(  ChatColor.YELLOW  + "  " + (obj.isFinished() ? ChatColor.STRIKETHROUGH : "") + obj.getInfo() );
         }
+
+        lore.add( "" );
+        lore.add( ChatColor.GRAY + "Reward : " );
+        lore.add( ChatColor.GOLD + "  " + quest.getPoint() + " Attribute Point" );
+
         lore.add( "" );
         lore.add( (isDone == true) ? (ChatColor.GREEN + "  Complete！") : (ChatColor.BLUE + "  In progress...") );
         // set item meta
         itemMeta.setLore( lore );
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(itemMeta);
-        inventory.setItem(levelSlot - 1, item);
+        inventory.setItem( petLevel.getLevel() - 1, item);
     }
 
     @Override

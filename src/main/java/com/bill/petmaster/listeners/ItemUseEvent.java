@@ -8,8 +8,8 @@ import com.bill.petmaster.entity.CustomEntity;
 import com.bill.petmaster.holder.PetNavigationHolder;
 import com.bill.petmaster.manager.DataManager;
 import com.bill.petmaster.manager.ItemManeger;
-import com.bill.petmaster.util.PetSkillPoint;
-import com.bill.petmaster.util.PetSkill;
+import com.bill.petmaster.util.AttributePoint;
+import com.bill.petmaster.util.PetAttribute;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
