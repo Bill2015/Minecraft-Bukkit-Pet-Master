@@ -16,6 +16,7 @@ import com.bill.petmaster.util.PetLevel;
 import com.bill.petmaster.util.PetAttribute;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -58,6 +59,8 @@ public abstract class CustomEntity {
     protected int foodCosumeDelay;                      //pet cosume delay
 
     protected boolean isDead;
+
+    public final static double CHASE_TARGE_DISTANCE = 16.0;
 
     public CustomEntity(Mob entity, Player owner, Map<Integer, PetQuest>  petQuests){
         this.entity         = entity;
@@ -135,13 +138,17 @@ public abstract class CustomEntity {
        entity.setTarget( null );
        entity.setFireTicks( 0 );
        entity.addPotionEffect( new PotionEffect( PotionEffectType.INVISIBILITY , Integer.MAX_VALUE, 1) );
+       Location lastLocation = entity.getLocation();
        owner.getWorld().playSound( owner.getLocation(), Sound.BLOCK_ANVIL_LAND, 1.0f, 1.25f);
        entity.setHealth( 0.01 );
        //create a dummy, let him looks like relly dead.
-       Mob dummy = (Mob)entity.getWorld().spawnEntity(entity.getLocation() , entity.getType());
+       Mob dummy = (Mob)entity.getWorld().spawnEntity( lastLocation , entity.getType());
        dummy.setVelocity( entity.getVelocity() );
        dummy.damage( dummy.getAttribute( Attribute.GENERIC_MAX_HEALTH ).getValue() );
        owner.sendMessage( "[PetMaster] Your pet " + name + " is died."  );
+
+        //prevent player or monster keep attacking or blocking way(TODO, this is a temperating way)
+        entity.teleport( new Location( entity.getWorld() ,lastLocation.getX(),  255, lastLocation.getZ() ) );
     }
 
     /** revival the pet */
@@ -334,5 +341,18 @@ public abstract class CustomEntity {
         }
     }
     /** check the target are death already */
-    protected abstract void checkTarget();
+    private void checkTarget(){
+        if( entity.getTarget() != null ){
+            LivingEntity target = entity.getTarget();
+
+            if( target.isDead() == true || target.isValid() == false ){
+                entity.setTarget( null );
+            }
+            else{
+                if( entity.getLocation().distance( target.getLocation() ) > CHASE_TARGE_DISTANCE ){
+                    entity.setTarget( null );
+                }
+            }
+        }
+    }
 }

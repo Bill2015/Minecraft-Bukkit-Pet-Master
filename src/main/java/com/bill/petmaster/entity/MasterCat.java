@@ -21,22 +21,4 @@ public class MasterCat extends CustomEntity{
     public Cat getEntity(){
         return (Cat)entity;
     }
-
-    @Override
-    public void checkTarget(){
-        Cat cat = ((Cat)entity);
-        if( cat.getTarget() != null ){
-            LivingEntity target = cat.getTarget();
-
-            if( target.isDead() == true || target.isValid() == false ){
-                cat.setTarget( null );
-            }
-            else{
-                double followRange = cat.getAttribute( Attribute.GENERIC_FOLLOW_RANGE ).getDefaultValue();
-                if( cat.getLocation().distance( target.getLocation() ) > followRange ){
-                    cat.setTarget( null );
-                }
-            }
-        }
-    }
 }

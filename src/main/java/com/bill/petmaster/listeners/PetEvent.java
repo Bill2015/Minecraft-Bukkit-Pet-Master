@@ -78,8 +78,7 @@ public class PetEvent implements Listener{
                 // if is a masterCat
                 if( pet instanceof MasterCat ){
                     //check is target out of range
-                    double followRange = pet.getEntity().getAttribute( Attribute.GENERIC_FOLLOW_RANGE ).getDefaultValue();
-                    if( pet.getEntity().getLocation().distance( event.getEntity().getLocation() ) <= followRange ){
+                    if( pet.getEntity().getLocation().distance( event.getEntity().getLocation() ) <= MasterCat.CHASE_TARGE_DISTANCE ){
                         ((Cat)pet.getEntity()).setTarget( (LivingEntity)event.getEntity() );
                     }
                 }
@@ -135,6 +134,7 @@ public class PetEvent implements Listener{
                     //get custom entity and excute dead
                     CustomEntity customEntity = dataManager.getPetsMap().get( uuid );
                     customEntity.dead();
+
                     event.setCancelled( true );
                     return;
                 }
