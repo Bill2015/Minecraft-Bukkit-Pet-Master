@@ -243,7 +243,7 @@ public abstract class CustomEntity {
                         @Override public void run(){
                             item.remove();
                         }
-                    }.runTaskLater(plugin, 60);
+                    }.runTaskLater(plugin, 15);
                 } 
             }
         }

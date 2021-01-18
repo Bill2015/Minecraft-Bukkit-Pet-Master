@@ -1,5 +1,8 @@
 package com.bill.petmaster.quest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
 
 public class PetQuest{
@@ -26,13 +29,14 @@ public class PetQuest{
         this.gainPoint          = gainPoint;
         this.questObjective     = questObjective;
     }
-    public PetQuest( PetQuest obj, QeustMap<? extends PetObjective> questObjective ){
-        this.questType          = obj.questType;
-        this.questName          = obj.questName;
-        this.representMaterial  = obj.representMaterial;
-        this.finishedMaterial   = obj.finishedMaterial;
-        this.gainPoint          = obj.gainPoint;
-        this.questObjective     = questObjective;
+    /** get clone objective for every pet 
+     *  @return {@link List} a cloned objective list */
+    public List<PetObjective> cloneObjective(){
+        ArrayList<PetObjective> list = new ArrayList<>();
+        for (PetObjective obj : questObjective.values() ) {
+            list.add( obj.cloneObjective() );
+        }
+        return list;
     }
     /** get this quest name 
      *  @return {@link String} quest name*/

@@ -25,7 +25,7 @@ public class PetLevel {
     protected int level;
     protected PetSkill petSkill;
     protected PetQuest nowQuest;
-    protected PetObjective objectives[];
+    protected List<PetObjective> objectives;
     
     protected final CustomEntity owner;
     protected final List<PetQuest> petQuests;
@@ -39,16 +39,14 @@ public class PetLevel {
         this.petSkill       = new PetSkill( MUTIPLE );
         this.nowQuest       = petQuests.get( level - 1 );
 
-        QeustMap<? extends PetObjective> objMap = nowQuest.getQuestObjective();
-        objectives = new PetObjective[ objMap.size() ];
-        objectives = Arrays.copyOf( objMap.values().toArray( objectives ), objMap.size() );
+        objectives = nowQuest.cloneObjective();
     }
 
 
     public PetSkill getPetSkill() {
         return petSkill;
     }
-    public PetObjective[] getObjectives() {
+    public List<PetObjective> getObjectives() {
         return objectives;
     }
     public PetQuest getNowQuest() {
@@ -99,13 +97,13 @@ public class PetLevel {
                 
                 int slot = -1;
                 //check this progress are finished
-                if( objectives[ objCount ].isFinished() == false ){
+                if( objectives.get( objCount ).isFinished() == false ){
                     //get quest item slot
                     if( (slot = inventory.first( material )) != -1 ){
                         //quest item decreased
                         inventory.setItem(slot, new ItemStack( material , inventory.getItem(slot).getAmount() - 1)  );
                         //quest progress add
-                        objectives[ objCount ].addProgress( 1 );                    
+                        objectives.get( objCount ).addProgress( 1 );                    
                         return material;
                     }
                 }
@@ -133,13 +131,16 @@ public class PetLevel {
         entity.getWorld().playSound( entity.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
         entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation().add(0,0.5,0), 20, 0.4, 0.4, 0.4, 0.25, null, true);
         
+        //add skill point into skill
+        petSkill.addSkillPoint( (short)nowQuest.getPoint() );
+
+
         // setting
         level += 1;
         nowQuest = petQuests.get( level - 1 );
         // copy new objective
-        QeustMap<? extends PetObjective> objMap = nowQuest.getQuestObjective();
-        objectives = new PetObjective[ objMap.size() ];
-        objectives = Arrays.copyOf( objMap.values().toArray( objectives ), objMap.size() );
+        objectives = nowQuest.cloneObjective();
+
     }
 
 }

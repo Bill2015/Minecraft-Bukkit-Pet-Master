@@ -2,9 +2,9 @@ package com.bill.petmaster.quest;
 
 
 public abstract class PetObjective{
-    private final String name;              //display item or entity  name
-    private final int requireAmount;        //Require mob require amount
-    private int nowAmount = 0;
+    protected final String name;              //display item or entity  name
+    protected final int requireAmount;        //Require mob require amount
+    protected int nowAmount = 0;
     /**
      * construct a Quest item or entity object
      * @param name display item or entity name
@@ -44,4 +44,6 @@ public abstract class PetObjective{
     public String getInfo() {
         return String.join("", name, " ( ", String.valueOf( nowAmount ), " / ", String.valueOf( requireAmount ), " )" );
     }
+
+    public abstract PetObjective cloneObjective();
 }

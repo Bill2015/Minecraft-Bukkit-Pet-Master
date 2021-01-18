@@ -16,4 +16,9 @@ public class EntityObjective extends PetObjective{
     public EntityType getMaterial() {
         return entityType;
     }
+
+    /** get clone {@link EntityObjective} */
+    public EntityObjective cloneObjective(){
+        return new EntityObjective(entityType, name, requireAmount);
+    }
 }

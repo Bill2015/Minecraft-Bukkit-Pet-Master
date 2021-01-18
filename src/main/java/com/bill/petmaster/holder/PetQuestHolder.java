@@ -58,7 +58,7 @@ public class PetQuestHolder implements InventoryHolder {
         inventory.setItem(levelSlot, item);
     }
 
-    public void updateItem( PetQuest petQuest, PetObjective[] objectives, int levelSlot, boolean isDone ){
+    public void updateItem( PetQuest petQuest, List<PetObjective> objectives, int levelSlot, boolean isDone ){
        
         //set represent material
         ItemStack item = new ItemStack( (isDone == false) ? petQuest.getRepresent() : petQuest.getFinished() );

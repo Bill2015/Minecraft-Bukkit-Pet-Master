@@ -1,24 +1,17 @@
 package com.bill.petmaster.manager;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.bill.petmaster.App;
 import com.bill.petmaster.quest.EntityObjective;
 import com.bill.petmaster.quest.EntityQuestMap;
 import com.bill.petmaster.quest.ItemObjective;
 import com.bill.petmaster.quest.ItemQuestMap;
-import com.bill.petmaster.quest.PetObjective;
 import com.bill.petmaster.quest.PetQuest;
-import com.bill.petmaster.quest.QeustMap;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -72,7 +65,7 @@ public class QuestManager {
                     finishMaterial = Material.DIRT;
                     messageManager.sendQuestDataLoadMissingMaterial( lvlcount );
                 }
-                int points          = lvlSection.getInt("points");
+                short points        = (short)lvlSection.getInt("points");
                 String questType    = lvlSection.getString("type").toUpperCase();
 
                 //judge which type of quest
@@ -104,7 +97,7 @@ public class QuestManager {
 
             MemorySection objSection = (MemorySection)objtemp;
             String objName              = objSection.getString("name");
-            int requireAmount           = objSection.getInt("require");
+            short requireAmount         = (short)objSection.getInt("require");
             EntityType objEntity        = EntityType.fromName( objSection.getString("key").toUpperCase() );
 
             // check objective item is exist
@@ -128,7 +121,7 @@ public class QuestManager {
 
             MemorySection objSection = (MemorySection)objtemp;
             String objName          = objSection.getString("name");
-            int requireAmount       = objSection.getInt("require");
+            short requireAmount     = (short)objSection.getInt("require");
             Material objMaterial    = Material.matchMaterial( objSection.getString("key").toUpperCase() );
 
             // check objective item is exist

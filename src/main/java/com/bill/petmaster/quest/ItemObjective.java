@@ -20,4 +20,9 @@ public class ItemObjective extends PetObjective{
     public Material getMaterial() {
         return material;
     }
+
+    /** get clone {@link ItemObjective} */
+    public ItemObjective cloneObjective(){
+        return new ItemObjective(material, name, requireAmount);
+    }
 }
