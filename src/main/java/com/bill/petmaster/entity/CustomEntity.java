@@ -5,11 +5,11 @@ import java.util.Arrays;
 import com.bill.petmaster.holder.PetInventoryHolder;
 import com.bill.petmaster.holder.PetMainMenuHolder;
 import com.bill.petmaster.holder.PetSkillMenuHolder;
-import com.bill.petmaster.util.EnitySkillPoint;
-import com.bill.petmaster.util.EntityFoodType;
-import com.bill.petmaster.util.EntityHunger;
-import com.bill.petmaster.util.EntityLevel;
-import com.bill.petmaster.util.EntitySkill;
+import com.bill.petmaster.util.PetSkillPoint;
+import com.bill.petmaster.util.PetFoodType;
+import com.bill.petmaster.util.PetHunger;
+import com.bill.petmaster.util.PetLevel;
+import com.bill.petmaster.util.PetSkill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -37,13 +37,13 @@ public abstract class CustomEntity {
     protected PetInventoryHolder inventoryHolder;   //inventory pf pet
     protected String name;                          //pet name
 
-    protected EntityLevel entityLevel;              //pet level system
+    protected PetLevel petLevel;                    //pet level system
     protected float[] baseStatus;                   //pet base status
 
     protected int lifeRegenDelay;                   //pet life regen delay
     protected float lifeRegen;                      //life regen of this pet
 
-    protected EntityHunger entityHunger;            //pet's hunger
+    protected PetHunger petHunger;                  //pet's hunger
     protected int foodDelay;                        //pet food delay
     protected int foodCosumeDelay;                  //pet cosume delay
 
@@ -57,8 +57,8 @@ public abstract class CustomEntity {
         this.menuHolder     = new PetMainMenuHolder( this );
         this.skillHolder    = new PetSkillMenuHolder( this );
         this.inventoryHolder= new PetInventoryHolder( this );
-        this.entityLevel    = new EntityLevel( this );
-        this.entityHunger   = new EntityHunger( this, EntityFoodType.FISHMEAT, 20.0f );
+        this.petLevel    = new PetLevel( this );
+        this.petHunger   = new PetHunger( this, PetFoodType.FISHMEAT, 20.0f );
         this.baseStatus     = new float[]{
             5.0f,   // Damage
             0.0f,   // Armor
@@ -68,7 +68,7 @@ public abstract class CustomEntity {
             20.0f,  // Food Capcity
             0       // Life Regen
         };
-        entityLevel.getEntitySkill().addSkillPoint( (short)20 );
+        petLevel.getPetSkill().addSkillPoint( (short)20 );
 
         updateStatus();
     }
@@ -94,12 +94,12 @@ public abstract class CustomEntity {
         return inventoryHolder;
     }
     /** get this entityLevel of pet  */
-    public EntityLevel getEntityLevel() {
-        return entityLevel;
+    public PetLevel getPetLevel() {
+        return petLevel;
     }
     /** get this hunger of pet  */
-    public EntityHunger getEntityHunger() {
-        return entityHunger;
+    public PetHunger getPetHunger() {
+        return petHunger;
     }
     /** get this pet the name */
     public String getName() {
@@ -162,31 +162,31 @@ public abstract class CustomEntity {
 
     /** update Attribute of pet */
     private void updateAttribute(){
-        EntitySkill skill = entityLevel.getEntitySkill();
+        PetSkill skill = petLevel.getPetSkill();
         //傷害  (% 數)
         entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue( 
-            skill.getValue( EnitySkillPoint.DAMAGE ) * baseStatus[ EnitySkillPoint.DAMAGE.get() ] 
+            skill.getValue( PetSkillPoint.DAMAGE ) * baseStatus[ PetSkillPoint.DAMAGE.get() ] 
         );
         //裝甲值 初始為0.0
         entity.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue( 
-            skill.getValue( EnitySkillPoint.ARMOR ) + baseStatus[ EnitySkillPoint.ARMOR.get() ]
+            skill.getValue( PetSkillPoint.ARMOR ) + baseStatus[ PetSkillPoint.ARMOR.get() ]
         );
         //最大血量 (% 數)
         entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue( 
-            skill.getValue( EnitySkillPoint.HEALTH ) * baseStatus[ EnitySkillPoint.HEALTH.get() ] 
+            skill.getValue( PetSkillPoint.HEALTH ) * baseStatus[ PetSkillPoint.HEALTH.get() ] 
         );
         //移動速度 (% 數)
         entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue( 
-            skill.getValue( EnitySkillPoint.SPEED ) * baseStatus[ EnitySkillPoint.SPEED.get() ] 
+            skill.getValue( PetSkillPoint.SPEED ) * baseStatus[ PetSkillPoint.SPEED.get() ] 
         );
         //擊退抗性 初始值0.0 最大值1.0 % 數
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue( 
-            skill.getValue( EnitySkillPoint.RESIST ) * baseStatus[ EnitySkillPoint.RESIST.get() ]
+            skill.getValue( PetSkillPoint.RESIST ) * baseStatus[ PetSkillPoint.RESIST.get() ]
         );
         //食物量
-        entityHunger.setMaxFoodLevel( skill.getValue( EnitySkillPoint.FOOD ) * baseStatus[ EnitySkillPoint.FOOD.get() ] );
+        petHunger.setMaxFoodLevel( skill.getValue( PetSkillPoint.FOOD ) * baseStatus[ PetSkillPoint.FOOD.get() ] );
         //回血速度  初始為0.0
-        lifeRegen = skill.getValue( EnitySkillPoint.REGEN );
+        lifeRegen = skill.getValue( PetSkillPoint.REGEN );
     }
 
     
@@ -207,10 +207,10 @@ public abstract class CustomEntity {
     //=======================             enity updater             ===========================
     /** the life regeneration of pet, every tick check once */
     private void lifeRegeneration(){
-        if( entityLevel.getEntitySkill().getValue( EnitySkillPoint.REGEN ) != 0){
+        if( petLevel.getPetSkill().getValue( PetSkillPoint.REGEN ) != 0){
             if( lifeRegenDelay++ >= (1200 / lifeRegen ) ){
                 //必須要有飽食度
-                if( !entityHunger.isHunger() ){
+                if( !petHunger.isHunger() ){
                     addHealth( 1.0 ); 
                     //回血時 增加飽食度消耗
                     if( entity.getHealth() < entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() ){
@@ -224,10 +224,10 @@ public abstract class CustomEntity {
     }
 
     private void consumeFood( Plugin plugin ){
-        if( (foodCosumeDelay += 1) >= EntityHunger.FOOD_COSUME_TIME ){
+        if( (foodCosumeDelay += 1) >= PetHunger.FOOD_COSUME_TIME ){
             foodCosumeDelay = 0;
             //消耗食物 回復飽食度
-            Material isEeating = entityHunger.consumeFood( inventoryHolder.getInventory() );
+            Material isEeating = petHunger.consumeFood( inventoryHolder.getInventory() );
             if(isEeating != null){  
                 for(int i = 0; i < 9; i++){
                     final int j = i;
@@ -247,18 +247,18 @@ public abstract class CustomEntity {
     /** the hunger status of pet, every tick check once */
     private void updateHunger(){
         //假如還有飽食度
-        if( entityHunger.getFoodValue() > 0 ){
+        if( petHunger.getFoodValue() > 0 ){
             //每半小時扣 1 點 飽食度
-            if( (foodDelay += 1) >= EntityHunger.DECREASE_FOOD_TIME ){
+            if( (foodDelay += 1) >= PetHunger.DECREASE_FOOD_TIME ){
                 foodDelay = 0;
-                entityHunger.addFoodValue( -1.0f );
+                petHunger.addFoodValue( -1.0f );
                 updateStatus();
             }
         }
         //假如沒有飽食度
         else{
             //每 1 分鐘扣 1 點血量
-            if( (foodDelay += 1) >= EntityHunger.DECREASE_LIFE_TIME ){
+            if( (foodDelay += 1) >= PetHunger.DECREASE_LIFE_TIME ){
                 foodDelay = 0;
                 entity.damage( 1.0 );
                 updateStatus();

@@ -30,4 +30,12 @@ public class DataManager {
         }
         return list;
     }
+
+
+    public boolean savePetData(){
+       /* for ( CustomEntity entity : petsMap.values() ) {
+            
+        }*/
+        return false;
+    }
 }

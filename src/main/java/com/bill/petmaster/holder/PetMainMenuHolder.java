@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.bill.petmaster.entity.CustomEntity;
-import com.bill.petmaster.util.EnitySkillPoint;
-import com.bill.petmaster.util.EntitySkill;
+import com.bill.petmaster.util.PetSkillPoint;
+import com.bill.petmaster.util.PetSkill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -53,20 +53,20 @@ public class PetMainMenuHolder implements InventoryHolder {
         double maxHealth = owner.getEntity().getAttribute( Attribute.GENERIC_MAX_HEALTH ).getValue(); 
         //總共 40 根(單位血量)
         String healthBar    = setBar("生命值", owner.getEntity().getHealth(),  maxHealth, ChatColor.GREEN);
-        String foodBar      = setBar("飽食度", owner.getEntityHunger().getFoodValue(),  owner.getEntityHunger().getMaxFoodValue(), ChatColor.GOLD);
+        String foodBar      = setBar("飽食度", owner.getPetHunger().getFoodValue(),  owner.getPetHunger().getMaxFoodValue(), ChatColor.GOLD);
         itemMeta.setDisplayName( ChatColor.RED + owner.getName() + ChatColor.GRAY + " 的狀態");
-        EntitySkill skill = owner.getEntityLevel().getEntitySkill();
+        PetSkill skill = owner.getPetLevel().getPetSkill();
         itemMeta.setLore( Arrays.asList(    healthBar, 
                                             foodBar, 
                                             "", 
                                             ChatColor.GRAY + "屬性 : ",
-                                            EnitySkillPoint.DAMAGE.getWhole( skill.getIncrement( EnitySkillPoint.DAMAGE ) ),
-                                            EnitySkillPoint.ARMOR.getWhole(  skill.getIncrement( EnitySkillPoint.ARMOR ) ),
-                                            EnitySkillPoint.HEALTH.getWhole( skill.getIncrement( EnitySkillPoint.HEALTH ) ),
-                                            EnitySkillPoint.SPEED.getWhole(  skill.getIncrement( EnitySkillPoint.SPEED ) ),
-                                            EnitySkillPoint.RESIST.getWhole( skill.getIncrement( EnitySkillPoint.RESIST ) ),
-                                            EnitySkillPoint.FOOD.getWhole(   skill.getIncrement( EnitySkillPoint.FOOD ) ),
-                                            EnitySkillPoint.REGEN.getWhole(  skill.getIncrement( EnitySkillPoint.REGEN ) )));
+                                            PetSkillPoint.DAMAGE.getWhole( skill.getIncrement( PetSkillPoint.DAMAGE ) ),
+                                            PetSkillPoint.ARMOR.getWhole(  skill.getIncrement( PetSkillPoint.ARMOR ) ),
+                                            PetSkillPoint.HEALTH.getWhole( skill.getIncrement( PetSkillPoint.HEALTH ) ),
+                                            PetSkillPoint.SPEED.getWhole(  skill.getIncrement( PetSkillPoint.SPEED ) ),
+                                            PetSkillPoint.RESIST.getWhole( skill.getIncrement( PetSkillPoint.RESIST ) ),
+                                            PetSkillPoint.FOOD.getWhole(   skill.getIncrement( PetSkillPoint.FOOD ) ),
+                                            PetSkillPoint.REGEN.getWhole(  skill.getIncrement( PetSkillPoint.REGEN ) )));
         item.setItemMeta(itemMeta);
         inv.setItem(7, item);
     }

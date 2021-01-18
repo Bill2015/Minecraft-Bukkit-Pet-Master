@@ -2,7 +2,6 @@ package com.bill.petmaster.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,19 +11,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 //食物類型
-public enum EntityFoodType{
+public enum PetFoodType{
     CARNIVORISM( ChatColor.LIGHT_PURPLE + "肉食主義",
                  Arrays.asList( Material.BEEF, Material.CHICKEN, Material.PORKCHOP, Material.MUTTON, Material.RABBIT),
-                 Arrays.asList(  0.2f,    0.2f,    0.2f,     0.2f,    0.2f) 
+                 Arrays.asList(  0.8f,    0.8f,    0.8f,     0.8f,    0.8f) 
                 ),
     
     FISHMEAT   ( ChatColor.LIGHT_PURPLE + "魚肉主義",
                  Arrays.asList( Material.COD, Material.COOKED_COD, Material.SALMON, Material.COOKED_SALMON, Material.PUFFERFISH),
-                 Arrays.asList(  0.3f,    0.3f,    0.3f,     0.3f,    0.3f) 
+                 Arrays.asList(  0.8f,    0.8f,    0.8f,     0.8f,    0.8f) 
                 );
     final String name;
     final HashMap<Material, Float> foods;
-    private EntityFoodType(String name, List<Material> materials, List<Float> values){
+    private PetFoodType(String name, List<Material> materials, List<Float> values){
        this.name                = name;
        this.foods               = new HashMap<>();
        Iterator<Material> mItor = materials.iterator();

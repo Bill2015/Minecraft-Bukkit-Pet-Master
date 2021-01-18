@@ -11,21 +11,27 @@ import com.bill.petmaster.listeners.ItemUseEvent;
 import com.bill.petmaster.listeners.PetEvent;
 import com.bill.petmaster.manager.DataManager;
 import com.bill.petmaster.manager.ItemManeger;
+import com.bill.petmaster.manager.MessageManager;
+import com.bill.petmaster.manager.QuestManager;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class App extends JavaPlugin {
 
     private ItemManeger itemManeger;
-    private DataManager DataManager;
+    private DataManager dataManager;
+    private MessageManager messageManager;
+    private QuestManager questManager;
     @Override public void onEnable() {
         saveDefaultConfig();
 
-        itemManeger = new ItemManeger();
-        DataManager = new DataManager();
+        messageManager  = new MessageManager( this );
+        itemManeger     = new ItemManeger();
+        dataManager     = new DataManager();
+        questManager    = new QuestManager( this, messageManager );
 
-        getServer().getPluginManager().registerEvents(new PetEvent(this), this);
-        getServer().getPluginManager().registerEvents(new ItemUseEvent(this), this);
+        getServer().getPluginManager().registerEvents(new PetEvent(this, dataManager, itemManeger), this);
+        getServer().getPluginManager().registerEvents(new ItemUseEvent(this, dataManager, itemManeger), this);
 
 
         Objects.requireNonNull(getCommand("petmaster")).setExecutor( new ItemCommand( itemManeger ) );
@@ -37,11 +43,4 @@ public final class App extends JavaPlugin {
     
     }
 
-
-    public ItemManeger getItemManeger() {
-        return itemManeger;
-    }
-    public DataManager getDataManager() {
-        return DataManager;
-    }
 }

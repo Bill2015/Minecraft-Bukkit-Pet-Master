@@ -1,0 +1,72 @@
+quest:
+  0:
+  1:
+   type: item
+   questName: A0
+   representMaterial: STONE
+   point: 1
+   objectives:
+    0:
+      name: 經驗瓶
+      key: EXPERIENCE_BOTTLE
+      require: 2
+  # =========================
+  2:
+   type: item
+   questName: A1
+   representMaterial: STONE
+   point: 1
+   objectives:
+    0:
+      name: 經驗瓶
+      key: EXPERIENCE_BOTTLE
+      require: 3
+  # =========================
+  3:
+   type: item
+   questName: A2
+   representMaterial: STONE
+   point: 1
+   objectives:
+    0:
+      name: 經驗瓶
+      key: EXPERIENCE_BOTTLE
+      require: 4
+  # =========================
+  4:
+   type: item
+   questName: A3
+   representMaterial: STONE
+   point: 1
+   objectives:
+    0:
+      name: 經驗瓶
+      key: EXPERIENCE_BOTTLE
+      require: 5
+    1:
+      name: 鑽石
+      key: DIAMOND
+      require: 5
+    2:
+      name: 鑽石
+      key: DIAMONDs
+      require: 5
+  # =========================
+  5:
+   type: entity
+   questName: B0
+   representMaterial: COAL_BLOCK
+   point: 3
+   objectives:
+    0:
+      name: 殭屍
+      key: ZOMBIE
+      require: 3
+    1:
+      name: 殭屍
+      key: ZOMBIEa
+      require: 3
+    2:
+      name: 史萊姆
+      key: SLIME
+      require: 3

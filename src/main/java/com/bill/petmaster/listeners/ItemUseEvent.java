@@ -8,8 +8,8 @@ import com.bill.petmaster.entity.CustomEntity;
 import com.bill.petmaster.holder.PetNavigationHolder;
 import com.bill.petmaster.manager.DataManager;
 import com.bill.petmaster.manager.ItemManeger;
-import com.bill.petmaster.util.EnitySkillPoint;
-import com.bill.petmaster.util.EntitySkill;
+import com.bill.petmaster.util.PetSkillPoint;
+import com.bill.petmaster.util.PetSkill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,9 +31,9 @@ import org.bukkit.inventory.meta.SkullMeta;
 public class ItemUseEvent implements Listener{
     private DataManager dataManager;
     private ItemManeger itemManeger;
-    public ItemUseEvent( App plugin ){
-        this.dataManager = plugin.getDataManager();
-        this.itemManeger = plugin.getItemManeger();
+    public ItemUseEvent( App plugin, DataManager dataManager, ItemManeger itemManeger ){
+        this.dataManager = dataManager;
+        this.itemManeger = itemManeger;
     }
     @EventHandler
     public void onPlayerUseChecker( PlayerInteractEvent event ){

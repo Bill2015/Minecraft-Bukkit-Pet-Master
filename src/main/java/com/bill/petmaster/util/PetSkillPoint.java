@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 
-public enum EnitySkillPoint {
+public enum PetSkillPoint {
     DAMAGE(0, Material.DIAMOND_SWORD,   ChatColor.DARK_RED + "☭  傷害量", "% 傷害"),
     ARMOR (1, Material.IRON_CHESTPLATE, ChatColor.WHITE + "☗  護甲值", "點 護甲"),
     HEALTH(2, Material.REDSTONE,        ChatColor.RED + "❤  最大血量", "% 生命最大值"),
@@ -17,7 +17,7 @@ public enum EnitySkillPoint {
     private final String name;
     private final String unit;
     private final int slot;
-    private EnitySkillPoint(int slot, Material material, String name, String unit){
+    private PetSkillPoint(int slot, Material material, String name, String unit){
         this.material = material;
         this.name = name;
         this.slot = slot;
@@ -34,5 +34,5 @@ public enum EnitySkillPoint {
     //取的字串
     public String getWhole(int values){ return name + "  " + values + unit; }
     //取得下個元素
-    public EnitySkillPoint next() {return values()[ordinal() + 1];}
+    public PetSkillPoint next() {return values()[ordinal() + 1];}
 }

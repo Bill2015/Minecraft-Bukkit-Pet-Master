@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.bill.petmaster.entity.CustomEntity;
-import com.bill.petmaster.util.EnitySkillPoint;
-import com.bill.petmaster.util.EntitySkill;
+import com.bill.petmaster.util.PetSkillPoint;
+import com.bill.petmaster.util.PetSkill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,19 +51,19 @@ public class PetNavigationHolder implements InventoryHolder{
     private List<String> getPetDetail( CustomEntity entity ){
         List<String> lore   = new ArrayList<>();
         String healthBar    = setBar("HEALTH", entity.getEntity().getHealth(),  entity.getEntity().getAttribute( Attribute.GENERIC_MAX_HEALTH ).getValue() , ChatColor.GREEN);
-        String foodBar      = setBar("FOOD  ", entity.getEntityHunger().getFoodValue(),  entity.getEntityHunger().getMaxFoodValue(), ChatColor.GOLD);
+        String foodBar      = setBar("FOOD  ", entity.getPetHunger().getFoodValue(),  entity.getPetHunger().getMaxFoodValue(), ChatColor.GOLD);
         lore.add( healthBar );
         lore.add( foodBar );
         lore.add( "" );
         lore.add(  ChatColor.GRAY + "" + ChatColor.BOLD + "PROPERTY : " );
-        EntitySkill skill = entity.getEntityLevel().getEntitySkill();
-        lore.add( EnitySkillPoint.DAMAGE.getWhole( skill.getIncrement( EnitySkillPoint.DAMAGE )) );
-        lore.add( EnitySkillPoint.ARMOR.getWhole( skill.getIncrement( EnitySkillPoint.ARMOR )) );
-        lore.add( EnitySkillPoint.HEALTH.getWhole( skill.getIncrement( EnitySkillPoint.HEALTH )) );
-        lore.add( EnitySkillPoint.SPEED.getWhole( skill.getIncrement( EnitySkillPoint.SPEED )) );
-        lore.add( EnitySkillPoint.RESIST.getWhole( skill.getIncrement( EnitySkillPoint.RESIST )) );
-        lore.add( EnitySkillPoint.FOOD.getWhole( skill.getIncrement( EnitySkillPoint.FOOD )) );
-        lore.add( EnitySkillPoint.REGEN.getWhole( skill.getIncrement( EnitySkillPoint.REGEN )) );
+        PetSkill skill = entity.getPetLevel().getPetSkill();
+        lore.add( PetSkillPoint.DAMAGE.getWhole( skill.getIncrement( PetSkillPoint.DAMAGE )) );
+        lore.add( PetSkillPoint.ARMOR.getWhole( skill.getIncrement( PetSkillPoint.ARMOR )) );
+        lore.add( PetSkillPoint.HEALTH.getWhole( skill.getIncrement( PetSkillPoint.HEALTH )) );
+        lore.add( PetSkillPoint.SPEED.getWhole( skill.getIncrement( PetSkillPoint.SPEED )) );
+        lore.add( PetSkillPoint.RESIST.getWhole( skill.getIncrement( PetSkillPoint.RESIST )) );
+        lore.add( PetSkillPoint.FOOD.getWhole( skill.getIncrement( PetSkillPoint.FOOD )) );
+        lore.add( PetSkillPoint.REGEN.getWhole( skill.getIncrement( PetSkillPoint.REGEN )) );
         lore.add( "" );
         lore.add( ChatColor.GRAY + "" + ChatColor.BOLD + "STATUS : " );
         if( entity.isDead() ){

@@ -6,26 +6,26 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class EntityHunger {
+public class PetHunger {
     private CustomEntity owner;
     private float maxFoodValue;
     private float foodValue;
-    private final EntityFoodType entityFoodType;
+    private final PetFoodType foodType;
     private final float defaultValue;
     public final static int DECREASE_FOOD_TIME = 360;
     public final static int DECREASE_LIFE_TIME = 120;
     public final static int FOOD_COSUME_TIME = 120;
-    public EntityHunger( CustomEntity owner, EntityFoodType foodType, float defaultValue ){
-        this.owner = owner;
+    public PetHunger( CustomEntity owner, PetFoodType foodType, float defaultValue ){
+        this.owner          = owner;
         this.foodValue      = defaultValue;
         this.maxFoodValue   = defaultValue;
         this.defaultValue   = defaultValue;
-        this.entityFoodType = foodType;
+        this.foodType       = foodType;
     }
     //吃食物 true 成功消耗食物  false 沒有找到食物或時候未到
     public Material consumeFood( Inventory inventory ){
         //把所有這個食物類型 包含的食物取出
-        for(Material mater : entityFoodType.getMaterials() ){
+        for(Material mater : foodType.getMaterials() ){
             //背包有食物
             if( inventory.contains( mater ) ){
                 //取得食物的 slot
@@ -33,7 +33,7 @@ public class EntityHunger {
                 //食物量減少
                 inventory.setItem(slot, new ItemStack( mater , inventory.getItem(slot).getAmount() - 1)  );
                 //飽食度增加
-                foodValue += entityFoodType.getValue( mater );
+                foodValue += foodType.getValue( mater );
                 return mater;
             }
         }

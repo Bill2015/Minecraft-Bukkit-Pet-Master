@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.bill.petmaster.entity.CustomEntity;
-import com.bill.petmaster.util.EnitySkillPoint;
-import com.bill.petmaster.util.EntitySkill;
+import com.bill.petmaster.util.PetSkillPoint;
+import com.bill.petmaster.util.PetSkill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,17 +48,17 @@ public class PetSkillMenuHolder implements InventoryHolder {
         return owner;
     }
     private void skillInventoryInital(){
-        setSkillPointItem(EnitySkillPoint.DAMAGE, 10, (short)0, 100);
-        setSkillPointItem(EnitySkillPoint.ARMOR , 11, (short)0,   0);
-        setSkillPointItem(EnitySkillPoint.HEALTH, 12, (short)0, 100);
-        setSkillPointItem(EnitySkillPoint.SPEED , 13, (short)0, 100);
-        setSkillPointItem(EnitySkillPoint.RESIST, 14, (short)0,   0);
-        setSkillPointItem(EnitySkillPoint.FOOD  , 15, (short)0, 100);
-        setSkillPointItem(EnitySkillPoint.REGEN , 16, (short)0,   0);
+        setSkillPointItem(PetSkillPoint.DAMAGE, 10, (short)0, 100);
+        setSkillPointItem(PetSkillPoint.ARMOR , 11, (short)0,   0);
+        setSkillPointItem(PetSkillPoint.HEALTH, 12, (short)0, 100);
+        setSkillPointItem(PetSkillPoint.SPEED , 13, (short)0, 100);
+        setSkillPointItem(PetSkillPoint.RESIST, 14, (short)0,   0);
+        setSkillPointItem(PetSkillPoint.FOOD  , 15, (short)0, 100);
+        setSkillPointItem(PetSkillPoint.REGEN , 16, (short)0,   0);
         setFixedItem(Material.BOOK, ChatColor.GOLD + "尚有 " + 0 + " 點未分配的技能點", 22, Arrays.asList("",ChatColor.LIGHT_PURPLE + "點擊我即可重置技能點" , ChatColor.LIGHT_PURPLE + "需消耗 10 金蘋果" ));
     }
     //設定屬性點的書
-    private void setSkillPointItem(EnitySkillPoint skill, int slot, short point, int value){
+    private void setSkillPointItem(PetSkillPoint skill, int slot, short point, int value){
         ItemStack item = new ItemStack(skill.getMaterial());
         item.setAmount(point == 0 ? 1 : point );
         ItemMeta itemMeta = item.getItemMeta();
@@ -83,8 +83,8 @@ public class PetSkillMenuHolder implements InventoryHolder {
 
     public void updateStatus(){
         int slot = DAMAGE_SLOT;
-        EntitySkill skill = owner.getEntityLevel().getEntitySkill();
-        for( EnitySkillPoint sk : EnitySkillPoint.values() ){
+        PetSkill skill = owner.getPetLevel().getPetSkill();
+        for( PetSkillPoint sk : PetSkillPoint.values() ){
             setSkillPointItem(sk, slot++, skill.getPoint( sk ), skill.getIncrement( sk ));
         }
         ArrayList<String> lore = new ArrayList<>();

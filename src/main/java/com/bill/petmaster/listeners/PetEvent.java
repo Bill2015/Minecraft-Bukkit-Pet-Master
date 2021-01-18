@@ -50,10 +50,10 @@ public class PetEvent implements Listener{
     private App plugin;
     private DataManager dataManager;
     private ItemManeger itemManeger;
-    public PetEvent(App plugin){
+    public PetEvent(App plugin, DataManager dataManager, ItemManeger itemManeger){
         this.plugin = plugin;
-        this.dataManager = plugin.getDataManager();
-        this.itemManeger = plugin.getItemManeger();
+        this.dataManager = dataManager;
+        this.itemManeger = itemManeger;
         updaterTick();
     }    
 
@@ -99,7 +99,7 @@ public class PetEvent implements Listener{
             // player use skill point
             else if( holder instanceof PetSkillMenuHolder ){
                 PetSkillMenuHolder skillHolder = (PetSkillMenuHolder)holder;
-                skillHolder.getOwner().getEntityLevel().useSkillPoint( event.getRawSlot() );
+                skillHolder.getOwner().getPetLevel().useSkillPoint( event.getRawSlot() );
                 event.setCancelled( true );
                 return;
             }
