@@ -20,24 +20,24 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 
 public class QuestManager {
-    private Map<Integer, PetQuest> quests;
     private FileConfiguration dataConfig;
     private final App plugin;
     private final MessageManager messageManager;
+    private static Map<Integer, PetQuest> PET_QUESTS;
     public QuestManager( App plugin, MessageManager messageManager ){
         this.plugin         = plugin;
         this.messageManager = messageManager;
         
         loadQuestFile();
-        this.quests         = loadQuestData();
+        PET_QUESTS         = loadQuestData();
         plugin.getLogger().info("Data load finished.");
-        printResult();
+        //printResult();
     }
 
     /** get the quest of pet List
      *  @return {@link Map} qeust List*/
-    public Map<Integer, PetQuest> getQuests() {
-        return quests;
+    public static Map<Integer, PetQuest> getPetQuests() {
+        return PET_QUESTS;
     }
 
     private Map<Integer, PetQuest> loadQuestData(){
@@ -169,7 +169,7 @@ public class QuestManager {
     /** just for test */
     private void printResult(){
         plugin.getLogger().info( "Print Pet Quest Data");
-        for (PetQuest petQuest : quests.values() ) {
+        for (PetQuest petQuest : PET_QUESTS.values() ) {
             plugin.getLogger().info( petQuest.getQuestName() );
 
             if( petQuest.getQuestObjective() instanceof ItemQuestMap ){

@@ -1,4 +1,20 @@
 configVersion: 1
 
 settings:
-  hello: hello
+  CAT:
+    attribute:
+      baseValues: 
+        #damage   armor   health  speed   Resist  food    regen
+        [5.0,     2.0,    10.0,   0.4,    0.0,    10.0,   1.0]
+      growthMultiple: 
+        #damage   armor   health  speed   Resist  food    regen
+        [50.0,     8.0,    10.0,   5.0,   5.0,    10.0,   1.0]
+    
+  WOLF:
+    attribute:
+      baseValues: 
+        #damage   armor   health  speed   Resist  food    regen
+        [5.0,     2.0,    10.0,   5.0,    5.0,    10.0,   1.0]
+      growthMultiple: 
+        #damage   armor   health  speed   Resist  food    regen
+        [5.0,     2.0,    10.0,   0.4,    0.0,    10.0,   1.0]

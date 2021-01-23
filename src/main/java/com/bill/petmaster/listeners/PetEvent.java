@@ -79,7 +79,7 @@ public class PetEvent implements Listener{
                 if( pet instanceof MasterCat ){
                     //check is target out of range
                     if( pet.getEntity().getLocation().distance( event.getEntity().getLocation() ) <= MasterCat.CHASE_TARGE_DISTANCE ){
-                        ((Cat)pet.getEntity()).setTarget( (LivingEntity)event.getEntity() );
+                        pet.getEntity().setTarget( (LivingEntity)event.getEntity() );
                     }
                 }
             }

@@ -1,13 +1,10 @@
 package com.bill.petmaster.util;
 
-import com.bill.petmaster.entity.CustomEntity;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class PetHunger {
-    private CustomEntity owner;
     private float maxFoodValue;
     private float foodValue;
     private final PetFoodType foodType;
@@ -15,8 +12,7 @@ public class PetHunger {
     public final static int DECREASE_FOOD_TIME = 360;
     public final static int DECREASE_LIFE_TIME = 120;
     public final static int FOOD_COSUME_TIME = 120;
-    public PetHunger( CustomEntity owner, PetFoodType foodType, float defaultValue ){
-        this.owner          = owner;
+    public PetHunger( PetFoodType foodType, float defaultValue ){
         this.foodValue      = defaultValue;
         this.maxFoodValue   = defaultValue;
         this.defaultValue   = defaultValue;
@@ -62,10 +58,10 @@ public class PetHunger {
     public void setMaxFoodLevel(float maxFoodLevel) {
         this.maxFoodValue = maxFoodLevel;
     }
-    public CustomEntity getOwner() {
-        return owner;
-    }
     public float getDefaultValue() {
         return defaultValue;
+    }
+    public PetFoodType getFoodType(){
+        return foodType;
     }
 }

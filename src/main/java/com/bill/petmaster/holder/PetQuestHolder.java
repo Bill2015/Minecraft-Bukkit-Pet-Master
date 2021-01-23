@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.bill.petmaster.manager.QuestManager;
 import com.bill.petmaster.quest.EntityObjective;
 import com.bill.petmaster.quest.EntityQuestMap;
 import com.bill.petmaster.quest.ItemObjective;
@@ -23,11 +24,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class PetQuestHolder implements InventoryHolder {
     private Inventory inventory;
-    public PetQuestHolder( Map<Integer, PetQuest>  petQuests ){
+    public PetQuestHolder(){
         inventory = Bukkit.createInventory(this, 54, "Pets Quest List");
 
         int level = 0;
-        for (PetQuest petQuest : petQuests.values() ) {
+        for (PetQuest petQuest : QuestManager.getPetQuests().values() ) {
             setItem( petQuest, level );
             level += 1;
         }

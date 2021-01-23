@@ -22,7 +22,12 @@ public abstract class PetObjective{
     /** add targer object amount 
      *  @param amount amount */
     public void addProgress( int amount ){
-        nowAmount += amount;
+        this.nowAmount += amount;
+    }
+    /** set targer object amount 
+     *  @param amount amount */
+    public void setProgress( int amount ){
+        this.nowAmount = amount;
     }
     /** judge progress are exceed requireAmount 
      *  @return {@link Boolean} true exceeded, false not yet*/
@@ -43,6 +48,11 @@ public abstract class PetObjective{
      *  @return {@link String} item info */
     public String getInfo() {
         return String.join("", name, " ( ", String.valueOf( nowAmount ), " / ", String.valueOf( requireAmount ), " )" );
+    }
+    /** get this objective complete amount 
+     *  @return {@linl int} now amount */
+    public int getProgress(){
+        return nowAmount;
     }
 
     public abstract PetObjective cloneObjective();

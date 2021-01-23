@@ -1,24 +1,25 @@
 package com.bill.petmaster.entity;
 
-import java.util.List;
-import java.util.Map;
+import com.bill.petmaster.util.PetAttribute;
+import com.bill.petmaster.util.PetHunger;
+import com.bill.petmaster.util.PetLevel;
 
-import javax.swing.text.html.parser.Entity;
-
-import com.bill.petmaster.quest.PetQuest;
-
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Cat;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class MasterCat extends CustomEntity{
-    public MasterCat(Cat cat, Player owner, Map<Integer, PetQuest> petQuest){
-        super(cat, owner, petQuest);
+public class MasterCat extends CustomEntity {
+    public MasterCat( Mob entity, Player owner, String name, boolean isDead, PetAttribute petAttribute, PetLevel petLevel, PetHunger petHunger, ItemStack[] items) {
+        super(entity, owner, name, isDead, petAttribute, petLevel, petHunger, items);
+
     }
 
     @Override
-    public Cat getEntity(){
-        return (Cat)entity;
+    public Cat getEntity() {
+        return (Cat) entity;
     }
+
+
+
 }

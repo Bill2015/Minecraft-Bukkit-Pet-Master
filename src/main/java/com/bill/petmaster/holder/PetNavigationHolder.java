@@ -56,7 +56,7 @@ public class PetNavigationHolder implements InventoryHolder{
         lore.add( foodBar );
         lore.add( "" );
         lore.add(  ChatColor.GRAY + "" + ChatColor.BOLD + "PROPERTY : " );
-        PetAttribute petAttribute = entity.getPetLevel().getPetAttribute();
+        PetAttribute petAttribute = entity.getPetAttribute();
         lore.add( AttributePoint.DAMAGE.getWhole( petAttribute.getIncrement( AttributePoint.DAMAGE )) );
         lore.add( AttributePoint.ARMOR.getWhole( petAttribute.getIncrement( AttributePoint.ARMOR )) );
         lore.add( AttributePoint.HEALTH.getWhole( petAttribute.getIncrement( AttributePoint.HEALTH )) );

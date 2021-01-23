@@ -55,7 +55,7 @@ public class PetMainMenuHolder implements InventoryHolder {
         String healthBar    = setBar("生命值", owner.getEntity().getHealth(),  maxHealth, ChatColor.GREEN);
         String foodBar      = setBar("飽食度", owner.getPetHunger().getFoodValue(),  owner.getPetHunger().getMaxFoodValue(), ChatColor.GOLD);
         itemMeta.setDisplayName( ChatColor.RED + owner.getName() + ChatColor.GRAY + " 的狀態");
-        PetAttribute petAttribute = owner.getPetLevel().getPetAttribute();
+        PetAttribute petAttribute = owner.getPetAttribute();
         itemMeta.setLore( Arrays.asList(    healthBar, 
                                             foodBar, 
                                             "", 

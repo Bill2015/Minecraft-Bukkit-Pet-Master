@@ -10,6 +10,7 @@ import com.bill.petmaster.command.ItemCommand;
 import com.bill.petmaster.listeners.ItemUseEvent;
 import com.bill.petmaster.listeners.PetEvent;
 import com.bill.petmaster.listeners.PetInterfaceEvent;
+import com.bill.petmaster.manager.ConfigManager;
 import com.bill.petmaster.manager.DataManager;
 import com.bill.petmaster.manager.ItemManeger;
 import com.bill.petmaster.manager.MessageManager;
@@ -23,13 +24,15 @@ public final class App extends JavaPlugin {
     private DataManager dataManager;
     private MessageManager messageManager;
     private QuestManager questManager;
+    private ConfigManager configManager;
     @Override public void onEnable() {
         saveDefaultConfig();
 
+        configManager   = new ConfigManager( this );
         messageManager  = new MessageManager( this );
-        itemManeger     = new ItemManeger();
-        dataManager     = new DataManager();
         questManager    = new QuestManager( this, messageManager );
+        itemManeger     = new ItemManeger();
+        dataManager     = new DataManager( this );
 
         getServer().getPluginManager().registerEvents(new PetInterfaceEvent(this, dataManager, itemManeger, questManager), this);
         getServer().getPluginManager().registerEvents(new PetEvent(this, dataManager, itemManeger, questManager), this);
@@ -42,7 +45,7 @@ public final class App extends JavaPlugin {
 
     @Override
     public void onDisable() {
-    
+        dataManager.savePetData();
     }
 
 }

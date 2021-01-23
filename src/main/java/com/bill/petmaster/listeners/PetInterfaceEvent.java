@@ -1,7 +1,9 @@
 package com.bill.petmaster.listeners;
 
 import com.bill.petmaster.App;
+import com.bill.petmaster.entity.CustomEntity;
 import com.bill.petmaster.entity.MasterCat;
+import com.bill.petmaster.entity.CustomEntity.CustomEntityBuilder;
 import com.bill.petmaster.holder.PetAttributeMenuHolder;
 import com.bill.petmaster.holder.PetInventoryHolder;
 import com.bill.petmaster.holder.PetMainMenuHolder;
@@ -81,7 +83,7 @@ public class PetInterfaceEvent implements Listener {
             // player use attribute point
             else if( holder instanceof PetAttributeMenuHolder ){
                 PetAttributeMenuHolder attributeHolder = (PetAttributeMenuHolder)holder;
-                attributeHolder.getOwner().getPetLevel().useAttributePoint( event.getRawSlot() );
+                attributeHolder.getOwner().useAttributePoint( event.getRawSlot() );
                 event.setCancelled( true );
                 return;
             }
@@ -142,9 +144,11 @@ public class PetInterfaceEvent implements Listener {
                         player.openInventory( cat.getMenuHolder().getInventory() );
                     }
                     else{
-                        MasterCat cat = new MasterCat( ((Cat)entity), event.getPlayer(), questManager.getQuests()  );
+                        MasterCat cat = (MasterCat)(CustomEntity.getBuilder( (Cat)entity, event.getPlayer() ).build( MasterCat.class ));
+
                         dataManager.getPetsMap().put( entity.getUniqueId(), cat );
                         player.openInventory( cat.getMenuHolder().getInventory() );
+
                     }
                 }
             }

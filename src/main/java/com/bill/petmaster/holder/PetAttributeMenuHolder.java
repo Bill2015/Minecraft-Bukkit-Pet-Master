@@ -11,6 +11,8 @@ import com.bill.petmaster.util.PetAttribute;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
@@ -22,7 +24,7 @@ public class PetAttributeMenuHolder implements InventoryHolder {
     /** The inventory for pet */
     private Inventory inventory;
 
-    private final CustomEntity owner;
+    private final CustomEntity pet;
 
     public static final int DAMAGE_SLOT = 10;
     public static final int ARMOR_SLOT  = 11;
@@ -33,8 +35,8 @@ public class PetAttributeMenuHolder implements InventoryHolder {
     public static final int REGEN_SLOT  = 16;
     public static final int RESET_SLOT  = 22;
 
-    public PetAttributeMenuHolder(CustomEntity owner){
-        this.owner = owner;
+    public PetAttributeMenuHolder(CustomEntity pet){
+        this.pet = pet;
         this.inventory = Bukkit.createInventory(this, 36,  ChatColor.GOLD + "寵物 << 技能點頁面 >>" );
         attributeInventoryInital();
     }
@@ -44,7 +46,7 @@ public class PetAttributeMenuHolder implements InventoryHolder {
         return inventory;
     }
     public CustomEntity getOwner() {
-        return owner;
+        return pet;
     }
     private void attributeInventoryInital(){
         setAttributePointItem(AttributePoint.DAMAGE, 10, (short)0, 100);
@@ -82,7 +84,7 @@ public class PetAttributeMenuHolder implements InventoryHolder {
 
     public void updateStatus(){
         int slot = DAMAGE_SLOT;
-        PetAttribute petAttribute = owner.getPetLevel().getPetAttribute();
+        PetAttribute petAttribute = pet.getPetAttribute();
         for( AttributePoint sk : AttributePoint.values() ){
             setAttributePointItem(sk, slot++, petAttribute.getPoint( sk ), petAttribute.getIncrement( sk ));
         }
